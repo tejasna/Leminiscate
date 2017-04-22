@@ -8,12 +8,10 @@
     android:background="@color/colorPrimary"
     tools:context="com.leminiscate.login.LoginActivity">
 
+  <FrameLayout
+      android:id="@+id/content_frame"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"/>
 
-  <android.support.v7.widget.AppCompatImageView
-      android:id="@+id/img_logo"
-      android:layout_width="110dip"
-      android:layout_height="110dip"
-      android:layout_gravity="center"
-      android:src="@mipmap/ic_launcher"/>
 
 </FrameLayout>
