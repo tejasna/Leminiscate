@@ -1,6 +1,18 @@
 <resources>
   <string name="app_name">Leminiscate</string>
-  <string name="login_failed">Could not log you in right now :(</string>
+  <string name="login_error">Could not log you in right now</string>
+  <string name="transactions_balance">Balance</string>
+  <string name="transactions_activity">Activity</string>
+  <string name="transactions_view_all">View all</string>
+  <string name="transactions_settings">Settings</string>
+  <string name="transactions_empty">No transactions found</string>
+  <string name="transactions_error">Could no retrieve transactions</string>
+  <string name="exception_no_view_type_found">No view type found</string>
+  <string name="balance_toolbar">Balance</string>
+  <string name="balance_available">Available balance</string>
+  <string name="balance_unavailable">Balance unavailable</string>
+  <string name="balance_error">Could not retrieve balance</string>
+  <string name="transactions_detail_toolbar">Activity</string>
 
   <!-- TODO: Remove or change this placeholder text -->
   <string name="hello_blank_fragment">Hello blank fragment</string>

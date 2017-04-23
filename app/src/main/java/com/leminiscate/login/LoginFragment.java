@@ -62,7 +62,7 @@ public class LoginFragment extends Fragment implements LoginContract.View {
       startActivity(new Intent(getContext(), TransactionsActivity.class));
       getActivity().finish();
     } else {
-      Toast.makeText(getContext(), getString(R.string.login_failed), Toast.LENGTH_SHORT).show();
+      Toast.makeText(getContext(), getString(R.string.login_error), Toast.LENGTH_SHORT).show();
     }
   }
 

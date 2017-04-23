@@ -66,6 +66,7 @@ dependencies {
   compile "com.squareup.retrofit2:converter-gson:$rootProject.retrofitVersion"
   compile "com.squareup.okhttp3:logging-interceptor:$rootProject.okhttpVersion"
   compile "com.squareup.okhttp3:okhttp:$rootProject.okhttpVersion"
+  compile "joda-time:joda-time:$rootProject.jodaTimeVersion"
 
   // Android Testing Support Library's runner and rules
   androidTestCompile "com.android.support.test:runner:$rootProject.ext.runnerVersion"

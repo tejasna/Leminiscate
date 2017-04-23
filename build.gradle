@@ -43,4 +43,5 @@ ext {
   rxbindingVersion = '0.2.0'
   runnerVersion = '0.5'
   rulesVersion = '0.5'
+  jodaTimeVersion = "2.9.9"
 }

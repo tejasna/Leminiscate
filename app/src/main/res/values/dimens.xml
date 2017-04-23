@@ -1,5 +1,9 @@
 <resources>
-  <!-- Default screen margins, per the Android Design guidelines. -->
   <dimen name="activity_horizontal_margin">16dp</dimen>
   <dimen name="activity_vertical_margin">16dp</dimen>
+  <dimen name="fragment_horizontal_margin">16dp</dimen>
+  <dimen name="fragment_vertical_margin">32dp</dimen>
+  <dimen name="fab_margin">16dip</dimen>
+  <dimen name="status_bar_margin">24dip</dimen>
+  <dimen name="navigation_bar_margin">64dip</dimen>
 </resources>

@@ -1,0 +1,70 @@
+<android.support.v4.widget.SwipeRefreshLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/refresh_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
+    android:padding="20dip">
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dip"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+
+      <android.support.v7.widget.AppCompatTextView
+          android:layout_width="50dip"
+          android:layout_height="50dip"/>
+
+      <com.leminiscate.widget.SolomonTextViewBold
+          android:id="@+id/balance"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:gravity="center"
+          android:textColor="@color/colorPrimaryDark"
+          android:textSize="36sp"/>
+
+      <com.leminiscate.widget.SolomonTextViewRegular
+          android:id="@+id/currency"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginBottom="8dip"
+          android:layout_marginStart="8dip"
+          android:textAllCaps="true"
+          android:textAppearance="?android:attr/textAppearanceMedium"
+          android:textColor="@color/colorPrimaryDark"/>
+
+    </LinearLayout>
+
+    <com.leminiscate.widget.SolomonTextViewBold
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="4dip"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:text="@string/balance_available"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/colorPrimaryDark"/>
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="0.25dip"
+        android:layout_marginEnd="20dip"
+        android:layout_marginStart="20dip"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:background="@color/colorPrimaryDark"/>
+
+  </LinearLayout>
+
+</android.support.v4.widget.SwipeRefreshLayout>
+
+

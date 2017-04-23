@@ -20,6 +20,12 @@
         <category android:name="android.intent.category.LAUNCHER"/>
       </intent-filter>
     </activity>
+    <activity android:name=".balance.BalanceActivity">
+    </activity>
+    <activity android:name=".activity.TransactionsDetailActivity">
+    </activity>
+    <activity android:name=".transactionsdetail.TransactionsDetailActivity">
+    </activity>
   </application>
 
 </manifest>

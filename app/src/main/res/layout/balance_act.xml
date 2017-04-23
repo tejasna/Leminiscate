@@ -3,13 +3,14 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_main"
+    android:id="@+id/refresh_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimary"
     android:orientation="vertical"
     android:paddingTop="@dimen/status_bar_margin"
-    tools:context="com.leminiscate.transactions.TransactionsActivity">
+    tools:context="com.leminiscate.balance.BalanceActivity">
+
 
   <android.support.design.widget.AppBarLayout
       android:layout_width="match_parent"
@@ -26,7 +27,7 @@
       <com.leminiscate.widget.SolomonTextViewBold
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:text="@string/app_name"
+          android:text="@string/balance_toolbar"
           android:textAppearance="?android:attr/textAppearanceLarge"/>
 
     </android.support.v7.widget.Toolbar>
@@ -54,5 +55,6 @@
         app:layout_anchor="@id/content_frame"
         app:layout_anchorGravity="bottom|right|end"/>
   </android.support.design.widget.CoordinatorLayout>
+
 
 </LinearLayout>

@@ -1,22 +1,25 @@
 package com.leminiscate.data.source;
 
 import android.support.annotation.NonNull;
+import com.leminiscate.data.Balance;
 import com.leminiscate.data.Login;
+import com.leminiscate.data.Transaction;
+import java.util.List;
 
 public interface WalletDataSource {
 
-  interface LoadTasksCallback {
+  interface LoadTransactionsCallback {
 
-    //void onTasksLoaded(List<Task> tasks);
-    //
-    //void onDataNotAvailable();
+    void onTransactionsLoaded(List<Transaction> transactions);
+
+    void onDataNotAvailable();
   }
 
-  interface GetTaskCallback {
+  interface LoadBalanceCallback {
 
-    //void onTaskLoaded(Task task);
-    //
-    //void onDataNotAvailable();
+    void onBalanceLoaded(Balance balance);
+
+    void onDataNotAvailable();
   }
 
   interface LoginCallback {
@@ -28,28 +31,6 @@ public interface WalletDataSource {
     void onLoginFailure();
   }
 
-  void getTasks(@NonNull LoadTasksCallback callback);
-
-  void getTask(@NonNull String taskId, @NonNull GetTaskCallback callback);
-
-  //void saveTask(@NonNull Task task);
-  //
-  //void completeTask(@NonNull Task task);
-
-  void completeTask(@NonNull String taskId);
-
-  //void activateTask(@NonNull Task task);
-
-  void activateTask(@NonNull String taskId);
-
-  void clearCompletedTasks();
-
-  void refreshTasks();
-
-  void deleteAllTasks();
-
-  void deleteTask(@NonNull String taskId);
-
   void login(@NonNull LoginCallback callback);
 
   void checkLoginState(@NonNull LoginCallback callback);
@@ -57,6 +38,20 @@ public interface WalletDataSource {
   void saveLoginState(@NonNull Login login);
 
   void clearLoginState();
+
+  void getTransactions(@NonNull LoadTransactionsCallback callback);
+
+  void saveTransactions(@NonNull List<Transaction> transactions);
+
+  void getBalance(@NonNull LoadBalanceCallback callback);
+
+  void saveBalance(@NonNull Balance balance);
+
+  void refreshTransactions();
+
+  void deleteAllTransactions();
+
+  void deleteExistingBalance();
 
   void clearSubscriptions();
 }

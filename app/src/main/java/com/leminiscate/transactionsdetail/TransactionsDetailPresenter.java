@@ -1,4 +1,4 @@
-package com.leminiscate.transactions;
+package com.leminiscate.transactionsdetail;
 
 import com.leminiscate.data.Transaction;
 import com.leminiscate.data.source.WalletDataSource;
@@ -6,16 +6,16 @@ import com.leminiscate.data.source.WalletRepository;
 import java.util.List;
 import javax.inject.Inject;
 
-class TransactionsPresenter implements TransactionsContract.Presenter {
+public class TransactionsDetailPresenter implements TransactionsDetailContract.Presenter {
 
   private final WalletRepository mRepository;
 
-  private final TransactionsContract.View mTransactionsView;
+  private final TransactionsDetailContract.View mTransactionsView;
 
   private boolean mFirstLoad = true;
 
-  @Inject TransactionsPresenter(WalletRepository tasksRepository,
-      TransactionsContract.View transactionsView) {
+  @Inject TransactionsDetailPresenter(WalletRepository tasksRepository,
+      TransactionsDetailContract.View transactionsView) {
     mRepository = tasksRepository;
     mTransactionsView = transactionsView;
   }
@@ -24,17 +24,17 @@ class TransactionsPresenter implements TransactionsContract.Presenter {
     mTransactionsView.setPresenter(this);
   }
 
+  @Override public void loadTransactions(boolean forceUpdate) {
+    loadTransactions(forceUpdate || mFirstLoad, true);
+    mFirstLoad = false;
+  }
+
   @Override public void start() {
     loadTransactions(false);
   }
 
   @Override public void stop() {
     mRepository.clearSubscriptions();
-  }
-
-  @Override public void loadTransactions(boolean forceUpdate) {
-    loadTransactions(forceUpdate || mFirstLoad, true);
-    mFirstLoad = false;
   }
 
   private void loadTransactions(boolean forceUpdate, final boolean showLoadingUI) {

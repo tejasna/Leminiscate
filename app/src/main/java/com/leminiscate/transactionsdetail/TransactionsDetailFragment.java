@@ -1,7 +1,6 @@
-package com.leminiscate.transactions;
+package com.leminiscate.transactionsdetail;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -21,20 +20,19 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import com.leminiscate.R;
-import com.leminiscate.balance.BalanceActivity;
 import com.leminiscate.data.Transaction;
-import com.leminiscate.transactionsdetail.TransactionsDetailActivity;
 import com.leminiscate.utils.UTCConverter;
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.leminiscate.utils.PreConditions.checkNotNull;
 
-public class TransactionsFragment extends Fragment implements TransactionsContract.View {
+public class TransactionsDetailFragment extends Fragment
+    implements TransactionsDetailContract.View {
 
-  private TransactionsContract.Presenter mPresenter;
+  private TransactionsDetailContract.Presenter mPresenter;
 
-  private TransactionsAdapter mRecyclerAdapter;
+  private TransactionsDetailFragment.TransactionsAdapter mRecyclerAdapter;
 
   private Unbinder unbinder;
 
@@ -42,22 +40,21 @@ public class TransactionsFragment extends Fragment implements TransactionsContra
 
   @BindView(R.id.refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
 
-  public TransactionsFragment() {
+  public TransactionsDetailFragment() {
   }
 
-  public static TransactionsFragment newInstance() {
-    return new TransactionsFragment();
+  public static TransactionsDetailFragment newInstance() {
+    return new TransactionsDetailFragment();
   }
 
   @Override public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    mRecyclerAdapter = new TransactionsAdapter(new ArrayList<>(0));
+    mRecyclerAdapter = new TransactionsDetailFragment.TransactionsAdapter(new ArrayList<>(0));
   }
 
   @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
       Bundle savedInstanceState) {
-
-    View rootView = inflater.inflate(R.layout.transactions_frag, container, false);
+    View rootView = inflater.inflate(R.layout.transactions_detail_frag, container, false);
 
     unbinder = ButterKnife.bind(this, rootView);
 
@@ -65,30 +62,21 @@ public class TransactionsFragment extends Fragment implements TransactionsContra
 
     LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
     layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-    recyclerView.addItemDecoration(new TransactionDividerItemDecoration(getContext()));
+    recyclerView.addItemDecoration(
+        new TransactionsDetailFragment.TransactionDividerItemDecoration(getContext()));
     recyclerView.setLayoutManager(layoutManager);
     recyclerView.setAdapter(mRecyclerAdapter);
 
     return rootView;
   }
 
-  @Override public void onStart() {
-    super.onStart();
+  @Override public void onResume() {
+    super.onResume();
     mPresenter.start();
   }
 
-  @Override public void onDestroy() {
-    super.onDestroy();
-    unbinder.unbind();
-    mPresenter.stop();
-  }
-
-  @Override public void setPresenter(TransactionsContract.Presenter presenter) {
+  @Override public void setPresenter(TransactionsDetailContract.Presenter presenter) {
     mPresenter = checkNotNull(presenter);
-  }
-
-  @Override public boolean isActive() {
-    return isAdded();
   }
 
   @Override public void setLoadingIndicator(boolean active) {
@@ -110,10 +98,19 @@ public class TransactionsFragment extends Fragment implements TransactionsContra
     Toast.makeText(getContext(), getString(R.string.transactions_error), Toast.LENGTH_SHORT).show();
   }
 
+  @Override public boolean isActive() {
+    return isAdded();
+  }
+
+  @Override public void onDestroy() {
+    super.onDestroy();
+    unbinder.unbind();
+    mPresenter.stop();
+  }
+
   private static class TransactionsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private static int HEADER = 1;
-    private static int ITEM = 2;
+    private static int ITEM = 1;
     private List<Transaction> transactions;
 
     TransactionsAdapter(List<Transaction> transactions) {
@@ -133,11 +130,7 @@ public class TransactionsFragment extends Fragment implements TransactionsContra
       if (viewType == ITEM) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         View view = layoutInflater.inflate(R.layout.transaction_item, parent, false);
-        return new TransactionsAdapter.VHTransaction(view);
-      } else if (viewType == HEADER) {
-        LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-        View view = layoutInflater.inflate(R.layout.transactions_header, parent, false);
-        return new TransactionsAdapter.VHHeader(view);
+        return new TransactionsDetailFragment.TransactionsAdapter.VHTransaction(view);
       }
       throw new RuntimeException(
           parent.getContext().getString(R.string.exception_no_view_type_found));
@@ -146,26 +139,22 @@ public class TransactionsFragment extends Fragment implements TransactionsContra
     @Override public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
       if (holder.getItemViewType() == ITEM) {
-        VHTransaction transaction = (VHTransaction) holder;
-        int finalPosition = position - 1;
-        transaction.title.setText(transactions.get(finalPosition).getDescription());
-        transaction.amount.setText(transactions.get(finalPosition).getAmount());
+        TransactionsDetailFragment.TransactionsAdapter.VHTransaction transaction =
+            (TransactionsDetailFragment.TransactionsAdapter.VHTransaction) holder;
+        transaction.title.setText(transactions.get(position).getDescription());
+        transaction.amount.setText(transactions.get(position).getAmount());
         transaction.date.setText(android.text.format.DateUtils.getRelativeTimeSpanString(
             transaction.itemView.getContext(),
-            UTCConverter.getTimeInMilliseconds(transactions.get(finalPosition).getDate()), false));
+            UTCConverter.getTimeInMilliseconds(transactions.get(position).getDate()), false));
       }
     }
 
     @Override public int getItemCount() {
-      return transactions.size() + 1;
+      return transactions.size();
     }
 
     @Override public int getItemViewType(int position) {
-      if (position == 0) {
-        return HEADER;
-      } else {
-        return ITEM;
-      }
+      return ITEM;
     }
 
     private class VHTransaction extends RecyclerView.ViewHolder {
@@ -183,30 +172,6 @@ public class TransactionsFragment extends Fragment implements TransactionsContra
         this.amount = (AppCompatTextView) itemView.findViewById(R.id.amount);
         this.date = (AppCompatTextView) itemView.findViewById(R.id.date);
         this.currency = (AppCompatImageView) itemView.findViewById(R.id.img_currency);
-      }
-    }
-
-    private class VHHeader extends RecyclerView.ViewHolder {
-
-      View itemView;
-      View balanceHeader;
-      View activityHeader;
-
-      VHHeader(View itemView) {
-        super(itemView);
-        this.itemView = itemView;
-        this.balanceHeader = itemView.findViewById(R.id.view_group_balance);
-        this.activityHeader = itemView.findViewById(R.id.view_group_activity);
-        this.balanceHeader.setOnClickListener(view -> {
-          Context context = view.getContext();
-          Intent intent = new Intent(context, BalanceActivity.class);
-          context.startActivity(intent);
-        });
-        this.activityHeader.setOnClickListener(view -> {
-          Context context = view.getContext();
-          Intent intent = new Intent(context, TransactionsDetailActivity.class);
-          context.startActivity(intent);
-        });
       }
     }
   }
@@ -232,16 +197,8 @@ public class TransactionsFragment extends Fragment implements TransactionsContra
         int top = child.getBottom() + params.bottomMargin;
         int bottom = top + divider.getIntrinsicHeight();
 
-        int position = parent.getChildAdapterPosition(child);
-        int viewType = parent.getAdapter().getItemViewType(position);
-
-        if (viewType == TransactionsAdapter.HEADER) {
-          divider.setBounds(0, 0, 0, bottom);
-          divider.draw(c);
-        } else {
-          divider.setBounds(left, top, right, bottom);
-          divider.draw(c);
-        }
+        divider.setBounds(left, top, right, bottom);
+        divider.draw(c);
       }
     }
   }

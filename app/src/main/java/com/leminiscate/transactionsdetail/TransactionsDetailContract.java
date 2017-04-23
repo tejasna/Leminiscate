@@ -1,13 +1,13 @@
-package com.leminiscate.transactions;
+package com.leminiscate.transactionsdetail;
 
 import com.leminiscate.BasePresenter;
 import com.leminiscate.BaseView;
 import com.leminiscate.data.Transaction;
 import java.util.List;
 
-class TransactionsContract {
+public class TransactionsDetailContract {
 
-  interface View extends BaseView<TransactionsContract.Presenter> {
+  interface View extends BaseView<TransactionsDetailContract.Presenter> {
 
     void setLoadingIndicator(boolean active);
 
@@ -25,4 +25,3 @@ class TransactionsContract {
     void loadTransactions(boolean forceUpdate);
   }
 }
-
