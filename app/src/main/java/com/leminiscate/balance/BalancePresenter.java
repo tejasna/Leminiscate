@@ -31,11 +31,11 @@ class BalancePresenter implements BalanceContract.Presenter {
   }
 
   @Override public void loadBalance(boolean forceUpdate) {
-    loadTransactions(forceUpdate || mFirstLoad, true);
+    loadBalance(forceUpdate || mFirstLoad, true);
     mFirstLoad = false;
   }
 
-  private void loadTransactions(boolean forceUpdate, final boolean showLoadingUI) {
+  private void loadBalance(boolean forceUpdate, final boolean showLoadingUI) {
     if (showLoadingUI) {
       mBalanceView.setLoadingIndicator(true);
     }

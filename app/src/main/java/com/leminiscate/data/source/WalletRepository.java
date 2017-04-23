@@ -148,6 +148,7 @@ import static com.leminiscate.utils.PreConditions.checkNotNull;
           @Override public void onBalanceLoaded(Balance balance) {
             checkNotNull(balance);
             refreshCache(balance);
+            callback.onBalanceLoaded(balance);
           }
 
           @Override public void onDataNotAvailable() {

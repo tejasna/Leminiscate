@@ -65,6 +65,11 @@ public class TransactionsActivity extends AppCompatActivity {
     }
   }
 
+  @Override public boolean onSupportNavigateUp() {
+    onBackPressed();
+    return true;
+  }
+
   @Override protected void onDestroy() {
     super.onDestroy();
     unbinder.unbind();

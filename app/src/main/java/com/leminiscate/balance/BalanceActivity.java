@@ -20,8 +20,6 @@ public class BalanceActivity extends AppCompatActivity {
 
   private Unbinder unbinder;
 
-  private BalanceContract.Presenter presenter;
-
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.balance_act);
@@ -49,6 +47,11 @@ public class BalanceActivity extends AppCompatActivity {
         .balancePresenterModule(new BalancePresenterModule(balanceFragment))
         .build()
         .inject(this);
+  }
+
+  @Override public boolean onSupportNavigateUp() {
+    onBackPressed();
+    return true;
   }
 
   @Override protected void onDestroy() {

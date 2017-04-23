@@ -8,6 +8,15 @@ import java.util.List;
 
 public interface WalletDataSource {
 
+  interface LoginCallback {
+
+    void userExists();
+
+    void onLoginSuccess(Login login);
+
+    void onLoginFailure();
+  }
+
   interface LoadTransactionsCallback {
 
     void onTransactionsLoaded(List<Transaction> transactions);
@@ -20,15 +29,6 @@ public interface WalletDataSource {
     void onBalanceLoaded(Balance balance);
 
     void onDataNotAvailable();
-  }
-
-  interface LoginCallback {
-
-    void userExists();
-
-    void onLoginSuccess(Login login);
-
-    void onLoginFailure();
   }
 
   void login(@NonNull LoginCallback callback);
