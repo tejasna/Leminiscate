@@ -4,7 +4,7 @@ import java.util.TimeZone;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
-public class UTCConverter {
+public class UTCUtil {
 
   public static Long getTimeInMilliseconds(String utc) {
     DateTimeZone timeZone = DateTimeZone.forID(TimeZone.getDefault().getID());

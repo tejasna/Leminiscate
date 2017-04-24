@@ -23,6 +23,8 @@ class TransactionsContract {
   interface Presenter extends BasePresenter {
 
     void loadTransactions(boolean forceUpdate);
+
+    void result(int requestCode, int resultCode);
   }
 }
 

@@ -3,6 +3,7 @@ package com.leminiscate.data.source.local;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import com.leminiscate.data.Balance;
+import com.leminiscate.data.Currency;
 import com.leminiscate.data.Login;
 import com.leminiscate.data.Transaction;
 import com.leminiscate.data.source.WalletDataSource;
@@ -72,6 +73,15 @@ import static com.leminiscate.utils.PreConditions.checkNotNull;
     });
   }
 
+  @Override
+  public void newTransaction(@NonNull Transaction transaction, SaveTransactionCallback callback) {
+    Realm.getDefaultInstance().executeTransaction(realm -> {
+      realm.copyToRealmOrUpdate(transaction);
+      callback.onTransactionSaved();
+      realm.close();
+    });
+  }
+
   @Override public void refreshTransactions() {
     // Not required because the {@link TransactionsRepository} handles the logic of refreshing the
     // transactions from all the available data sources.
@@ -103,6 +113,58 @@ import static com.leminiscate.utils.PreConditions.checkNotNull;
     checkNotNull(balance);
     Realm.getDefaultInstance().executeTransaction(realm -> {
       realm.copyToRealmOrUpdate(balance);
+      realm.close();
+    });
+  }
+
+  @Override public void getCurrencies(@NonNull LoadCurrenciesCallback callback) {
+    Realm.getDefaultInstance().executeTransaction(realm -> {
+      RealmResults<Currency> currencies = realm.where(Currency.class).findAll();
+      if (currencies == null) {
+        callback.onDataNotAvailable();
+      } else {
+        callback.onCurrencyLoaded(realm.copyFromRealm(currencies));
+      }
+      realm.close();
+    });
+  }
+
+  @Override public void getPreferredCurrency(@NonNull LoadCurrenciesCallback callback) {
+    Realm.getDefaultInstance().executeTransaction(realm -> {
+      RealmResults<Currency> currencies =
+          realm.where(Currency.class).equalTo("preferred", true).findAll();
+      if (currencies == null) {
+        callback.onDataNotAvailable();
+      } else {
+        callback.onCurrencyLoaded(realm.copyFromRealm(currencies));
+      }
+      realm.close();
+    });
+  }
+
+  @Override public void savePreferredCurrency(@NonNull Currency newPreferredCurrency) {
+    Realm.getDefaultInstance().executeTransaction(realm -> {
+      Currency preferredCurrency =
+          realm.where(Currency.class).equalTo("preferred", true).findFirst();
+      if (preferredCurrency != null) {
+        preferredCurrency.setPreferred(false);
+        newPreferredCurrency.setPreferred(true);
+        realm.copyToRealmOrUpdate(preferredCurrency);
+        realm.copyToRealmOrUpdate(newPreferredCurrency);
+      }
+      realm.close();
+    });
+  }
+
+  @Override
+  public void isBalanceGreaterThan(@NonNull BalanceAvailabilityCallback callback, double amount) {
+    // Not required for the local data source because the {@link WalletRepository} handles
+  }
+
+  @Override public void saveCurrencies(@NonNull List<Currency> currencies) {
+    checkNotNull(currencies);
+    Realm.getDefaultInstance().executeTransaction(realm -> {
+      realm.copyToRealmOrUpdate(currencies);
       realm.close();
     });
   }

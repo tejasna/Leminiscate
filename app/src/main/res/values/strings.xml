@@ -6,14 +6,26 @@
   <string name="transactions_view_all">View all</string>
   <string name="transactions_settings">Settings</string>
   <string name="transactions_empty">No transactions found</string>
-  <string name="transactions_error">Could no retrieve transactions</string>
+  <string name="transactions_error">Could not retrieve transactions</string>
   <string name="exception_no_view_type_found">No view type found</string>
   <string name="balance_toolbar">Balance</string>
   <string name="balance_available">Available balance</string>
   <string name="balance_unavailable">Balance unavailable</string>
   <string name="balance_error">Could not retrieve balance</string>
   <string name="transactions_detail_toolbar">Activity</string>
-
-  <!-- TODO: Remove or change this placeholder text -->
-  <string name="hello_blank_fragment">Hello blank fragment</string>
+  <string name="spend_header">New transaction</string>
+  <string name="spend_currency">Currency</string>
+  <string name="spend_add">Add</string>
+  <string name="spend_description">Description</string>
+  <string name="spend_amount">Amount</string>
+  <string name="spend_invalid_description">Invalid description!</string>
+  <string name="spend_invalid_amount">Invalid amount</string>
+  <string name="spend_successful">A new transaction was added</string>
+  <string name="spend_error">Could not add a new transaction</string>
+  <string name="currency_error">Could not retrieve currencies</string>
+  <string name="currency_empty">No currencies found</string>
+  <string name="error_balance_insufficient">Insufficient balance</string>
+  <string name="error_request_balance">Could not retrieve your balance</string>
+  <string name="error_invalid_currency">Invalid currency</string>
+  <string name="change_preferred_currency">Currency preferences</string>
 </resources>

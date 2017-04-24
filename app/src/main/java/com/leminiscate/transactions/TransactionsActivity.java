@@ -1,6 +1,8 @@
 package com.leminiscate.transactions;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -9,10 +11,13 @@ import android.view.MenuItem;
 import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 import com.leminiscate.LeminiscateApplication;
 import com.leminiscate.R;
+import com.leminiscate.spend.SpendActivity;
 import com.leminiscate.utils.ActivityUtils;
+import com.leminiscate.utils.CurrencyMapper;
 import javax.inject.Inject;
 
 public class TransactionsActivity extends AppCompatActivity {
@@ -21,10 +26,11 @@ public class TransactionsActivity extends AppCompatActivity {
 
   @BindView(R.id.toolbar) Toolbar toolbar;
 
+  @BindView(R.id.fab_add_transaction) FloatingActionButton fabAddTransaction;
+
   private Unbinder unbinder;
 
-  @SuppressWarnings("ConstantConditions") @Override
-  protected void onCreate(Bundle savedInstanceState) {
+  @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.transactions_act);
 
@@ -47,6 +53,17 @@ public class TransactionsActivity extends AppCompatActivity {
         .transactionsPresenterModule(new TransactionsPresenterModule(transactionsFragment))
         .build()
         .inject(this);
+
+    CurrencyMapper.setDefaultCurrency();
+  }
+
+  @OnClick(R.id.fab_add_transaction) void addNewTransaction() {
+    startActivityForResult(new Intent(this, SpendActivity.class),
+        SpendActivity.REQUEST_NEW_TRANSACTION);
+  }
+
+  @Override public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    mPresenter.result(requestCode, resultCode);
   }
 
   @Override public boolean onCreateOptionsMenu(Menu menu) {

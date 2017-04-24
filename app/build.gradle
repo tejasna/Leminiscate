@@ -49,12 +49,12 @@ dependencies {
   //Bindings
   compile "com.jakewharton:butterknife:$rootProject.butterknifeVersion"
   compile "com.jakewharton.timber:timber:$rootProject.timberVersion"
-  compile "com.jakewharton.rxbinding:rxbinding:$rootProject.rxbindingVersion"
+  compile "com.jakewharton.rxbinding2:rxbinding:$rootProject.rxBindingVersion"
   apt "com.jakewharton:butterknife-compiler:$rootProject.butterknifeVersion"
 
   //RxJava
   compile "io.reactivex.rxjava2:rxjava:$rootProject.rxJavaVersion"
-  compile "io.reactivex.rxjava2:rxandroid:$rootProject.rxJavaVersion"
+  compile "io.reactivex.rxjava2:rxandroid:$rootProject.rxBindingVersion"
   compile "com.jakewharton.rxrelay2:rxrelay:$rootProject.rxRelayVersion"
 
   //Network

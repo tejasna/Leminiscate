@@ -1,6 +1,7 @@
 package com.leminiscate;
 
 import android.content.Context;
+import com.leminiscate.utils.CurrencyMapper;
 import com.leminiscate.widget.FontCache;
 import dagger.Module;
 import dagger.Provides;

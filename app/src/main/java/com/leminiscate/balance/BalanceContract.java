@@ -4,7 +4,7 @@ import com.leminiscate.BasePresenter;
 import com.leminiscate.BaseView;
 import com.leminiscate.data.Balance;
 
-interface BalanceContract {
+class BalanceContract {
 
   interface View extends BaseView<BalanceContract.Presenter> {
 
@@ -22,5 +22,7 @@ interface BalanceContract {
   interface Presenter extends BasePresenter {
 
     void loadBalance(boolean forceUpdate);
+
+    void result(int requestCode, int resultCode);
   }
 }

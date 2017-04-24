@@ -13,6 +13,7 @@ import io.realm.annotations.RealmClass;
   @SerializedName("description") @Expose private String description;
   @SerializedName("amount") @Expose private String amount;
   @SerializedName("currency") @Expose private String currency;
+  private String amountInNativeRate;
 
   public String getId() {
     return id;
@@ -52,5 +53,13 @@ import io.realm.annotations.RealmClass;
 
   public void setCurrency(String currency) {
     this.currency = currency;
+  }
+
+  public String getAmountInNativeRate() {
+    return amountInNativeRate;
+  }
+
+  public void setAmountInNativeRate(String amountInNativeRate) {
+    this.amountInNativeRate = amountInNativeRate;
   }
 }

@@ -1,18 +1,24 @@
 package com.leminiscate.balance;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 import com.leminiscate.R;
+import com.leminiscate.currency.CurrencyActivity;
 import com.leminiscate.data.Balance;
+import com.leminiscate.utils.CurrencyMapper;
 
 import static com.leminiscate.utils.PreConditions.checkNotNull;
 
@@ -21,6 +27,8 @@ public class BalanceFragment extends Fragment implements BalanceContract.View {
   @BindView(R.id.currency) TextView currencyView;
 
   @BindView(R.id.balance) TextView balanceView;
+
+  @BindView(R.id.img_currency) ImageView imgCurrencyView;
 
   @BindView(R.id.refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
 
@@ -47,15 +55,14 @@ public class BalanceFragment extends Fragment implements BalanceContract.View {
     return rootView;
   }
 
+  @OnClick(R.id.currency_prefs) public void navigateToCurrencyScreen() {
+    startActivityForResult(new Intent(getContext(), CurrencyActivity.class),
+        CurrencyActivity.REQUEST_CURRENCY);
+  }
+
   @Override public void onResume() {
     super.onResume();
     mPresenter.start();
-  }
-
-  @Override public void onDestroy() {
-    super.onDestroy();
-    unbinder.unbind();
-    mPresenter.stop();
   }
 
   @Override public void setPresenter(BalanceContract.Presenter presenter) {
@@ -66,23 +73,35 @@ public class BalanceFragment extends Fragment implements BalanceContract.View {
     swipeRefreshLayout.setRefreshing(active);
   }
 
+  @Override public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    mPresenter.result(requestCode, resultCode);
+  }
+
   @Override public void showBalance(Balance balance) {
     swipeRefreshLayout.setRefreshing(false);
     currencyView.setText(balance.getCurrency());
     balanceView.setText(balance.getBalance());
+    imgCurrencyView.setImageDrawable(
+        ContextCompat.getDrawable(getContext(), CurrencyMapper.map(balance.getCurrency())));
   }
 
   @Override public void showBalanceUnavailable() {
     swipeRefreshLayout.setRefreshing(false);
-    Toast.makeText(getContext(), getString(R.string.balance_available), Toast.LENGTH_SHORT).show();
   }
 
   @Override public void showLoadingBalanceError() {
     swipeRefreshLayout.setRefreshing(false);
-    Toast.makeText(getContext(), getString(R.string.balance_error), Toast.LENGTH_SHORT).show();
+    Snackbar.make(swipeRefreshLayout, getString(R.string.balance_error), Snackbar.LENGTH_SHORT)
+        .show();
   }
 
   @Override public boolean isActive() {
     return isAdded();
+  }
+
+  @Override public void onDestroy() {
+    super.onDestroy();
+    unbinder.unbind();
+    mPresenter.stop();
   }
 }

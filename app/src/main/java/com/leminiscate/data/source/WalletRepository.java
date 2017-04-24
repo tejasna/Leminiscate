@@ -2,6 +2,7 @@ package com.leminiscate.data.source;
 
 import android.support.annotation.NonNull;
 import com.leminiscate.data.Balance;
+import com.leminiscate.data.Currency;
 import com.leminiscate.data.Login;
 import com.leminiscate.data.Transaction;
 import java.util.ArrayList;
@@ -21,7 +22,11 @@ import static com.leminiscate.utils.PreConditions.checkNotNull;
 
   private Map<String, Transaction> mCachedTransactions;
 
+  private Map<String, Currency> mCachedCurrencies;
+
   private Balance mCachedBalance;
+
+  private Currency mCachedPreferredCurrency;
 
   private boolean mCacheIsDirty = false;
 
@@ -100,6 +105,12 @@ import static com.leminiscate.utils.PreConditions.checkNotNull;
     }
   }
 
+  @Override
+  public void newTransaction(@NonNull Transaction transaction, SaveTransactionCallback callback) {
+    checkNotNull(transaction);
+    mRemoteDataSource.newTransaction(transaction, callback);
+  }
+
   @Override public void getBalance(@NonNull LoadBalanceCallback callback) {
     if (mCachedBalance != null && !mCacheIsDirty) {
       callback.onBalanceLoaded(mCachedBalance);
@@ -112,7 +123,7 @@ import static com.leminiscate.utils.PreConditions.checkNotNull;
       mLocalDataSource.getBalance(new LoadBalanceCallback() {
         @Override public void onBalanceLoaded(Balance balance) {
           checkNotNull(balance);
-          refreshCache(balance);
+          refreshBalanceCache(balance);
           callback.onBalanceLoaded(balance);
         }
 
@@ -134,10 +145,99 @@ import static com.leminiscate.utils.PreConditions.checkNotNull;
     mCachedBalance = balance;
   }
 
+  @Override public void getCurrencies(@NonNull LoadCurrenciesCallback callback) {
+
+    if (mCachedCurrencies != null && !mCacheIsDirty) {
+      callback.onCurrencyLoaded(new ArrayList<>(mCachedCurrencies.values()));
+      return;
+    }
+
+    if (mCacheIsDirty) {
+      getCurrenciesFromRemoteDataSource(callback);
+    } else {
+      mLocalDataSource.getCurrencies(new LoadCurrenciesCallback() {
+
+        @Override public void onCurrencyLoaded(List<Currency> currencies) {
+          checkNotNull(currencies);
+          refreshCurrencyCache(currencies);
+          callback.onCurrencyLoaded(currencies);
+        }
+
+        @Override public void onDataNotAvailable() {
+          getCurrenciesFromRemoteDataSource(callback);
+        }
+      });
+    }
+  }
+
+  @Override public void saveCurrencies(@NonNull List<Currency> currencies) {
+    checkNotNull(currencies);
+    mRemoteDataSource.saveCurrencies(currencies);
+    mLocalDataSource.saveCurrencies(currencies);
+
+    if (mCachedCurrencies == null) {
+      mCachedCurrencies = new LinkedHashMap<>();
+    }
+    for (Currency currency : currencies) {
+      mCachedCurrencies.put(currency.getName(), currency);
+    }
+  }
+
+  @Override public void getPreferredCurrency(@NonNull LoadCurrenciesCallback callback) {
+    if (!mCacheIsDirty && mCachedPreferredCurrency != null) {
+      ArrayList<Currency> currencies = new ArrayList<>(1);
+      currencies.add(mCachedPreferredCurrency);
+      callback.onCurrencyLoaded(currencies);
+    } else {
+      mLocalDataSource.getPreferredCurrency(new LoadCurrenciesCallback() {
+        @Override public void onCurrencyLoaded(List<Currency> currencies) {
+          checkNotNull(currencies);
+          callback.onCurrencyLoaded(currencies);
+        }
+
+        @Override public void onDataNotAvailable() {
+          callback.onDataNotAvailable();
+        }
+      });
+    }
+  }
+
+  @Override public void savePreferredCurrency(@NonNull Currency currency) {
+    checkNotNull(currency);
+    mRemoteDataSource.savePreferredCurrency(currency);
+    mLocalDataSource.savePreferredCurrency(currency);
+
+    if (mCachedPreferredCurrency == null) {
+      mCachedPreferredCurrency = new Currency();
+    }
+    mCachedPreferredCurrency = currency;
+  }
+
+  @Override
+  public void isBalanceGreaterThan(@NonNull BalanceAvailabilityCallback callback, double amount) {
+    mRemoteDataSource.getBalance(new LoadBalanceCallback() {
+      @Override public void onBalanceLoaded(Balance balance) {
+        refreshBalanceCache(balance);
+        refreshLocalDataSource(balance);
+        double d = Double.parseDouble(balance.getBalance());
+        int balanceInInt = (int) d;
+        if (balanceInInt > amount) {
+          callback.onBalanceSufficient();
+        } else {
+          callback.onBalanceInsufficient();
+        }
+      }
+
+      @Override public void onDataNotAvailable() {
+        callback.onBalanceAvailabilityError();
+      }
+    });
+  }
+
   private void getBalanceFromRemoteDataSource(@NonNull LoadBalanceCallback callback) {
     mRemoteDataSource.getBalance(new LoadBalanceCallback() {
       @Override public void onBalanceLoaded(Balance balance) {
-        refreshCache(balance);
+        refreshBalanceCache(balance);
         refreshLocalDataSource(balance);
         callback.onBalanceLoaded(mCachedBalance);
       }
@@ -147,7 +247,7 @@ import static com.leminiscate.utils.PreConditions.checkNotNull;
         mLocalDataSource.getBalance(new LoadBalanceCallback() {
           @Override public void onBalanceLoaded(Balance balance) {
             checkNotNull(balance);
-            refreshCache(balance);
+            refreshBalanceCache(balance);
             callback.onBalanceLoaded(balance);
           }
 
@@ -163,8 +263,9 @@ import static com.leminiscate.utils.PreConditions.checkNotNull;
       @NonNull final LoadTransactionsCallback callback) {
     mRemoteDataSource.getTransactions(new LoadTransactionsCallback() {
       @Override public void onTransactionsLoaded(List<Transaction> transactions) {
+        checkNotNull(transactions);
         refreshCache(transactions);
-        refreshLocalDataSource(transactions);
+        mLocalDataSource.saveTransactions(transactions);
         callback.onTransactionsLoaded(new ArrayList<>(mCachedTransactions.values()));
       }
 
@@ -175,6 +276,31 @@ import static com.leminiscate.utils.PreConditions.checkNotNull;
             checkNotNull(transactions);
             refreshCache(transactions);
             callback.onTransactionsLoaded(new ArrayList<>(mCachedTransactions.values()));
+          }
+
+          @Override public void onDataNotAvailable() {
+            callback.onDataNotAvailable();
+          }
+        });
+      }
+    });
+  }
+
+  private void getCurrenciesFromRemoteDataSource(@NonNull final LoadCurrenciesCallback callback) {
+    mRemoteDataSource.getCurrencies(new LoadCurrenciesCallback() {
+
+      @Override public void onCurrencyLoaded(List<Currency> currencies) {
+        refreshCurrencyCache(currencies);
+        callback.onCurrencyLoaded(new ArrayList<>(mCachedCurrencies.values()));
+      }
+
+      @Override public void onDataNotAvailable() {
+        callback.onDataNotAvailable();
+        mLocalDataSource.getTransactions(new LoadTransactionsCallback() {
+          @Override public void onTransactionsLoaded(List<Transaction> transactions) {
+            checkNotNull(transactions);
+            refreshCache(transactions);
+            callback.onCurrencyLoaded(new ArrayList<>(mCachedCurrencies.values()));
           }
 
           @Override public void onDataNotAvailable() {
@@ -225,17 +351,23 @@ import static com.leminiscate.utils.PreConditions.checkNotNull;
     mCacheIsDirty = false;
   }
 
-  private void refreshCache(Balance balance) {
+  private void refreshCurrencyCache(List<Currency> currencies) {
+    if (mCachedCurrencies == null) {
+      mCachedCurrencies = new LinkedHashMap<>();
+    }
+    mCachedCurrencies.clear();
+    for (Currency currency : currencies) {
+      mCachedCurrencies.put(currency.getName(), currency);
+    }
+    mCacheIsDirty = false;
+  }
+
+  private void refreshBalanceCache(Balance balance) {
     if (mCachedBalance == null) {
       mCachedBalance = new Balance();
     }
     mCachedBalance.setBalance(balance.getBalance());
     mCachedBalance.setCurrency(balance.getCurrency());
-  }
-
-  private void refreshLocalDataSource(List<Transaction> transactions) {
-    mLocalDataSource.deleteAllTransactions();
-    mLocalDataSource.saveTransactions(transactions);
   }
 
   private void refreshLocalDataSource(Balance balance) {

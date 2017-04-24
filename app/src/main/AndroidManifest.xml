@@ -11,20 +11,29 @@
       android:label="@string/app_name"
       android:supportsRtl="true"
       android:theme="@style/AppTheme">
-    <activity android:name=".transactions.TransactionsActivity">
-    </activity>
+    <activity
+        android:name=".transactions.TransactionsActivity"
+        android:screenOrientation="portrait"/>
+    <activity
+        android:name=".balance.BalanceActivity"
+        android:screenOrientation="portrait"/>
+    <activity
+        android:name=".spend.SpendActivity"
+        android:screenOrientation="portrait"
+        android:theme="@style/Theme.Transparent"/>
+    <activity android:name=".currency.CurrencyActivity"
+        android:screenOrientation="portrait"
+    />
+
+    <activity
+        android:name=".transactionsdetail.TransactionsDetailActivity"
+        android:screenOrientation="portrait"/>
     <activity android:name=".login.LoginActivity">
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
 
         <category android:name="android.intent.category.LAUNCHER"/>
       </intent-filter>
-    </activity>
-    <activity android:name=".balance.BalanceActivity">
-    </activity>
-    <activity android:name=".activity.TransactionsDetailActivity">
-    </activity>
-    <activity android:name=".transactionsdetail.TransactionsDetailActivity">
     </activity>
   </application>
 

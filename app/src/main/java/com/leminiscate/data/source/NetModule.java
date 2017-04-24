@@ -30,7 +30,7 @@ public class NetModule {
 
     return new Retrofit.Builder().addCallAdapterFactory(RxJava2CallAdapterFactory.create())
         .addConverterFactory(GsonConverterFactory.create(gson))
-        .baseUrl(BASE_URL)
+         .baseUrl(BASE_URL)
         .client(httpClientBuilder().build())
         .build();
   }

@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -15,13 +16,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import com.leminiscate.R;
 import com.leminiscate.data.Transaction;
-import com.leminiscate.utils.UTCConverter;
+import com.leminiscate.utils.CurrencyMapper;
+import com.leminiscate.utils.UTCUtil;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -90,12 +91,14 @@ public class TransactionsDetailFragment extends Fragment
 
   @Override public void showNoTransactions() {
     swipeRefreshLayout.setRefreshing(false);
-    Toast.makeText(getContext(), getString(R.string.transactions_empty), Toast.LENGTH_SHORT).show();
+    Snackbar.make(swipeRefreshLayout, getString(R.string.transactions_empty), Snackbar.LENGTH_SHORT)
+        .show();
   }
 
   @Override public void showLoadingTransactionsError() {
     swipeRefreshLayout.setRefreshing(false);
-    Toast.makeText(getContext(), getString(R.string.transactions_error), Toast.LENGTH_SHORT).show();
+    Snackbar.make(swipeRefreshLayout, getString(R.string.transactions_error), Snackbar.LENGTH_SHORT)
+        .show();
   }
 
   @Override public boolean isActive() {
@@ -129,7 +132,7 @@ public class TransactionsDetailFragment extends Fragment
     @Override public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
       if (viewType == ITEM) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-        View view = layoutInflater.inflate(R.layout.transaction_item, parent, false);
+        View view = layoutInflater.inflate(R.layout.transactions_item, parent, false);
         return new TransactionsDetailFragment.TransactionsAdapter.VHTransaction(view);
       }
       throw new RuntimeException(
@@ -142,10 +145,13 @@ public class TransactionsDetailFragment extends Fragment
         TransactionsDetailFragment.TransactionsAdapter.VHTransaction transaction =
             (TransactionsDetailFragment.TransactionsAdapter.VHTransaction) holder;
         transaction.title.setText(transactions.get(position).getDescription());
-        transaction.amount.setText(transactions.get(position).getAmount());
+        transaction.amount.setText(transactions.get(position).getAmountInNativeRate());
+        int id = CurrencyMapper.map(transactions.get(position).getCurrency());
+        transaction.currency.setImageDrawable(
+            ContextCompat.getDrawable(transaction.itemView.getContext(), id));
         transaction.date.setText(android.text.format.DateUtils.getRelativeTimeSpanString(
             transaction.itemView.getContext(),
-            UTCConverter.getTimeInMilliseconds(transactions.get(position).getDate()), false));
+            UTCUtil.getTimeInMilliseconds(transactions.get(position).getDate()), false));
       }
     }
 
@@ -181,7 +187,7 @@ public class TransactionsDetailFragment extends Fragment
     private Drawable divider;
 
     TransactionDividerItemDecoration(Context context) {
-      divider = ContextCompat.getDrawable(context, R.drawable.shape_receycler_view_divider);
+      divider = ContextCompat.getDrawable(context, R.drawable.shape_rv_divider);
     }
 
     @Override public void onDrawOver(Canvas c, RecyclerView parent, RecyclerView.State state) {
