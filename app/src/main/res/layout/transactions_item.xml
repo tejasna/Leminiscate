@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorGrey"
+    android:orientation="vertical"
+    android:padding="@dimen/fragment_horizontal_margin"
+>
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:orientation="horizontal">
+
+
+    <com.leminiscate.widget.SolomonTextViewRegular
+        android:id="@+id/title"
+        android:layout_width="0dip"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/colorPrimaryDark"/>
+
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/img_currency"
+        android:layout_width="20dip"
+        android:layout_height="20dip"
+        android:layout_gravity="center_vertical"
+        android:layout_marginEnd="4dip"
+        android:textColor="@color/colorPrimaryDark"/>
+
+    <com.leminiscate.widget.SolomonTextViewBold
+        android:id="@+id/amount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/colorPrimaryDark"/>
+  </LinearLayout>
+
+  <com.leminiscate.widget.SolomonTextViewRegular
+      android:id="@+id/date"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="end|bottom"
+      android:layout_marginTop="8dip"
+      android:textAppearance="?android:attr/textAppearanceSmall"
+      android:textColor="@color/colorPrimaryDark"/>
+
+
+</LinearLayout>

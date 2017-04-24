@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/transactions_detail_act"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
+    android:orientation="vertical"
+    android:paddingTop="@dimen/status_bar_margin"
+    tools:context="com.leminiscate.transactionsdetail.TransactionsDetailActivity">
+
+  <android.support.design.widget.AppBarLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimaryDark"
+        android:minHeight="?attr/actionBarSize"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+      <com.leminiscate.widget.SolomonTextViewBold
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:text="@string/transactions_detail_toolbar"
+          android:textAppearance="?android:attr/textAppearanceLarge"/>
+
+    </android.support.v7.widget.Toolbar>
+  </android.support.design.widget.AppBarLayout>
+
+  <android.support.design.widget.CoordinatorLayout
+      android:id="@+id/coordinatorLayout"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent">
+
+    <FrameLayout
+        android:id="@+id/content_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_add_transaction"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/navigation_bar_margin"
+        android:layout_marginEnd="@dimen/fab_margin"
+        android:src="@drawable/ic_plus"
+        android:tint="@color/colorPrimary"
+        app:fabSize="normal"
+        app:layout_anchor="@id/content_frame"
+        app:layout_anchorGravity="bottom|right|end"/>
+  </android.support.design.widget.CoordinatorLayout>
+
+</LinearLayout>

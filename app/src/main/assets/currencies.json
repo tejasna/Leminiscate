@@ -1,0 +1,22 @@
+[
+  {
+    "name": "GBP",
+    "resource": "R.drawable.gbp"
+  },
+  {
+    "name": "USD",
+    "resource": "R.drawable.usd"
+  },
+  {
+    "name": "JPY",
+    "resource": "R.drawable.jpy"
+  },
+  {
+    "name": "CHF",
+    "resource": "R.drawable.chf"
+  },
+  {
+    "name": "CAD",
+    "resource": "R.drawable.cad"
+  }
+]

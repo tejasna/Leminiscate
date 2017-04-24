@@ -1,0 +1,100 @@
+<android.support.v4.widget.SwipeRefreshLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/refresh_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
+    android:padding="20dip">
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dip"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+
+      <android.support.v7.widget.AppCompatImageView
+          android:id="@+id/img_currency"
+          android:layout_width="24dip"
+          android:layout_height="24dip"
+          android:layout_marginEnd="4dip"/>
+
+      <com.leminiscate.widget.SolomonTextViewBold
+          android:id="@+id/balance"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:gravity="center"
+          android:textColor="@color/colorPrimaryDark"
+          android:textSize="36sp"/>
+
+      <com.leminiscate.widget.SolomonTextViewRegular
+          android:id="@+id/currency"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginBottom="8dip"
+          android:layout_marginStart="8dip"
+          android:textAllCaps="true"
+          android:textAppearance="?android:attr/textAppearanceMedium"
+          android:textColor="@color/colorPrimaryDark"/>
+
+    </LinearLayout>
+
+    <com.leminiscate.widget.SolomonTextViewBold
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:gravity="center"
+        android:padding="4dip"
+        android:text="@string/balance_available"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/colorPrimaryDark"/>
+
+    <LinearLayout
+        android:id="@+id/currency_prefs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/activity_vertical_margin"
+        android:layout_marginStart="@dimen/activity_vertical_margin"
+        android:layout_marginTop="@dimen/fragment_vertical_margin"
+        android:orientation="horizontal">
+
+      <com.leminiscate.widget.SolomonTextViewRegular
+          android:layout_width="0dip"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:gravity="center_horizontal"
+          android:padding="4dip"
+          android:text="@string/change_preferred_currency"
+          android:textAppearance="?android:attr/textAppearanceSmall"
+          android:textColor="@color/colorPrimaryDark"/>
+
+      <android.support.v7.widget.AppCompatImageView
+          android:layout_width="12dip"
+          android:layout_height="12dip"
+          android:layout_gravity="center"
+          android:src="@drawable/ic_next"/>
+
+    </LinearLayout>
+
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="0.25dip"
+        android:layout_marginEnd="20dip"
+        android:layout_marginStart="20dip"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:background="@color/colorPrimaryDark"/>
+
+  </LinearLayout>
+
+</android.support.v4.widget.SwipeRefreshLayout>
+
+

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="20dip"
+    android:background="@drawable/shape_round_rect"
+    android:orientation="vertical"
+    android:padding="20dip"
+>
+  <com.leminiscate.widget.SolomonTextViewBold
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="@dimen/activity_vertical_margin"
+      android:gravity="start"
+      android:text="@string/spend_header"
+      android:textAppearance="?android:attr/textAppearanceLarge"
+      android:textColor="@color/colorPrimaryDark"/>
+
+
+  <android.support.design.widget.TextInputLayout
+      android:id="@+id/description_text_input_layout"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/activity_vertical_margin"
+      android:textColorHint="@color/colorPrimaryDark">
+
+    <com.leminiscate.widget.SolomonEditTextRegular
+        android:id="@+id/edt_description"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:hint="@string/spend_description"
+        android:textColor="@color/colorPrimaryDark"
+        android:textColorHint="@color/colorPrimaryDark"
+    />
+  </android.support.design.widget.TextInputLayout>
+
+  <android.support.design.widget.TextInputLayout
+      android:id="@+id/amount_text_input_layout"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="8dip"
+      android:textColorHint="@color/colorPrimaryDark">
+
+    <com.leminiscate.widget.SolomonEditTextRegular
+        android:id="@+id/edt_amount"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:hint="@string/spend_amount"
+        android:inputType="numberDecimal"
+        android:textColor="@color/colorPrimaryDark"
+        android:textColorHint="@color/colorPrimaryDark"
+    />
+
+  </android.support.design.widget.TextInputLayout>
+
+  <LinearLayout
+      android:id="@+id/view_group_currency"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/activity_vertical_margin"
+      android:orientation="horizontal"
+      android:padding="4dip">
+
+
+    <com.leminiscate.widget.SolomonTextViewBold
+        android:id="@+id/currency"
+        android:layout_width="0dip"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1"
+        android:text="@string/spend_currency"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/colorPrimaryDark"/>
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/img_currency"
+        android:layout_width="24dip"
+        android:layout_height="24dip"
+        android:padding="8dip"
+        android:src="@drawable/ic_next"
+    />
+  </LinearLayout>
+
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_marginBottom="40dip"
+      android:layout_marginTop="24dip"
+      android:orientation="horizontal"
+      android:paddingEnd="4dip"
+      android:paddingStart="4dip">
+
+
+    <com.leminiscate.widget.SolomonButtonBold
+        android:id="@+id/btn_cancel"
+        android:layout_width="0dip"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@android:color/transparent"
+        android:gravity="bottom|center_vertical"
+        android:text="@android:string/cancel"
+        android:textColor="@color/colorPrimaryDark"/>
+
+
+    <ProgressBar
+        android:id="@+id/progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|center_vertical"
+        android:layout_margin="10dip"
+        android:visibility="gone"
+        style="?android:attr/progressBarStyleSmall"/>
+
+    <com.leminiscate.widget.SolomonButtonBold
+        android:id="@+id/btn_add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:background="@color/colorPrimaryDark"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:text="@string/spend_add"
+        android:textAllCaps="true"
+    />
+  </LinearLayout>
+
+
+</LinearLayout>

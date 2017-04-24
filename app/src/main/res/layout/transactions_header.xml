@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorPrimary"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/fragment_vertical_margin"
+    android:paddingEnd="4dip"
+    android:paddingStart="4dip"
+>
+
+  <LinearLayout
+      android:id="@+id/view_group_balance"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+
+    <com.leminiscate.widget.SolomonTextViewBold
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@string/transactions_balance"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/colorPrimaryDark"/>
+
+
+    <android.support.v7.widget.AppCompatImageView
+        android:layout_width="32dip"
+        android:layout_height="32dip"
+        android:padding="8dip"
+        android:src="@drawable/ic_next"
+    />
+
+  </LinearLayout>
+
+  <View
+      android:layout_width="match_parent"
+      android:layout_height="0.1dip"
+      android:layout_marginTop="12dip"
+      android:background="@color/colorPrimaryDark"/>
+
+
+  <LinearLayout
+      android:id="@+id/view_group_activity"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="8dip"
+  >
+
+    <com.leminiscate.widget.SolomonTextViewBold
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1"
+        android:text="@string/transactions_activity"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/colorPrimaryDark"/>
+
+
+    <android.support.v7.widget.AppCompatTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:paddingEnd="8dip"
+        android:paddingStart="0dip"
+        android:text="@string/transactions_view_all"
+        android:textAllCaps="true"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="12sp"/>
+
+    <android.support.v7.widget.AppCompatImageView
+        android:layout_width="32dip"
+        android:layout_height="32dip"
+        android:padding="8dip"
+        android:src="@drawable/ic_next"
+    />
+
+  </LinearLayout>
+
+</LinearLayout>
