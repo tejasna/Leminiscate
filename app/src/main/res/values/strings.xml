@@ -28,4 +28,7 @@
   <string name="error_request_balance">Could not retrieve your balance</string>
   <string name="error_invalid_currency">Invalid currency</string>
   <string name="change_preferred_currency">Currency preferences</string>
+  <string name="session_expired">Session expired</string>
+  <string name="session_restart">Re-login to continue.</string>
+  <string name="logout">Logout</string>
 </resources>

@@ -55,7 +55,7 @@ dependencies {
   //RxJava
   compile "io.reactivex.rxjava2:rxjava:$rootProject.rxJavaVersion"
   compile "io.reactivex.rxjava2:rxandroid:$rootProject.rxBindingVersion"
-  compile "com.jakewharton.rxrelay2:rxrelay:$rootProject.rxRelayVersion"
+  compile "com.squareup:otto:$rootProject.ottoVersion"
 
   //Network
   compile("com.squareup.retrofit2:retrofit:$rootProject.retrofitVersion") {

@@ -62,12 +62,18 @@ import static io.reactivex.Observable.empty;
     compositeSubscription.add(restApi.getTransactions(getAuthorizer())
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
-        .doOnError(throwable -> Timber.e(throwable.getMessage()))
+        .doOnError(throwable -> {
+          Timber.e(throwable.getMessage());
+        })
         .onErrorResumeNext(throwable -> {
           callback.onDataNotAvailable();
           return empty();
         })
         .subscribe(callback::onTransactionsLoaded));
+  }
+
+  private void handle401() {
+
   }
 
   @Override public void saveTransactions(@NonNull List<Transaction> transactions) {
@@ -179,6 +185,9 @@ import static io.reactivex.Observable.empty;
     compositeSubscription.clear();
   }
 
+  @Override public void logout() {
+
+  }
 
   @Override public void refreshTransactions() {
     // Not required because the {@link TransactionsRepository} handles the logic of refreshing the

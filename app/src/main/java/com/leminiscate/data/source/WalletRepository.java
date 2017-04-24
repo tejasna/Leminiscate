@@ -5,6 +5,7 @@ import com.leminiscate.data.Balance;
 import com.leminiscate.data.Currency;
 import com.leminiscate.data.Login;
 import com.leminiscate.data.Transaction;
+import io.realm.Realm;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -60,7 +61,6 @@ import static com.leminiscate.utils.PreConditions.checkNotNull;
   @Override public void clearLoginState() {
     localDataSource.clearLoginState();
   }
-
 
   @Override public void getTransactions(@NonNull LoadTransactionsCallback callback) {
     if (cachedTransactions != null && !cacheIsDirty) {
@@ -215,7 +215,7 @@ import static com.leminiscate.utils.PreConditions.checkNotNull;
         refreshLocalDataSource(balance);
         double d = Double.parseDouble(balance.getBalance());
         int balanceInInt = (int) d;
-        if (balanceInInt > amount) {
+        if (balanceInInt >= amount) {
           callback.onBalanceSufficient();
         } else {
           callback.onBalanceInsufficient();
@@ -311,6 +311,11 @@ import static com.leminiscate.utils.PreConditions.checkNotNull;
 
   @Override public void clearSubscriptions() {
     remoteDataSource.clearSubscriptions();
+  }
+
+  @Override public void logout() {
+    Realm.getDefaultInstance().executeTransaction(realm -> realm.deleteAll());
+    System.exit(0);
   }
 
   @Override public void deleteExistingBalance() {

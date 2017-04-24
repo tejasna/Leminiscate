@@ -183,4 +183,8 @@ import static com.leminiscate.utils.PreConditions.checkNotNull;
     // Not required for the local data source because the {@link WalletRepository} handles
     // clearing the composite disposable
   }
+
+  @Override public void logout() {
+
+  }
 }

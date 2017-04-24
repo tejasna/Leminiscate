@@ -25,6 +25,8 @@ class TransactionsContract {
     void loadTransactions(boolean forceUpdate);
 
     void result(int requestCode, int resultCode);
+
+    void logout();
   }
 }
 

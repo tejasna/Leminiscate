@@ -26,19 +26,23 @@ public class CurrencyConverterUtil {
   }
 
   public static double convertAmountToGBP(Transaction transaction) {
-    double d = Double.parseDouble(transaction.getAmount());
+    try {
+      double d = Double.parseDouble(transaction.getAmount());
 
-    switch (transaction.getCurrency()) {
-      case "USD":
-        return d / ConversionTable.USD;
-      case "JPY":
-        return d / ConversionTable.JPY;
-      case "CHF":
-        return d / ConversionTable.CHF;
-      case "CAD":
-        return d / ConversionTable.CAD;
-      default:
-        return d / ConversionTable.GBP;
+      switch (transaction.getCurrency()) {
+        case "USD":
+          return d / ConversionTable.USD;
+        case "JPY":
+          return d / ConversionTable.JPY;
+        case "CHF":
+          return d / ConversionTable.CHF;
+        case "CAD":
+          return d / ConversionTable.CAD;
+        default:
+          return d / ConversionTable.GBP;
+      }
+    } catch (NumberFormatException e) {
+      return 1 / ConversionTable.GBP;
     }
   }
 

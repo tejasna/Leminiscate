@@ -4,6 +4,7 @@ import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.leminiscate.utils.ApiErrorImpl;
 import io.realm.RealmObject;
 import java.util.concurrent.TimeUnit;
 import okhttp3.OkHttpClient;
@@ -30,7 +31,7 @@ public class NetModule {
 
     return new Retrofit.Builder().addCallAdapterFactory(RxJava2CallAdapterFactory.create())
         .addConverterFactory(GsonConverterFactory.create(gson))
-         .baseUrl(BASE_URL)
+        .baseUrl(BASE_URL)
         .client(httpClientBuilder().build())
         .build();
   }
@@ -45,6 +46,7 @@ public class NetModule {
     httpClient.readTimeout(30, TimeUnit.SECONDS);
     httpClient.writeTimeout(30, TimeUnit.SECONDS);
     addPreRequisiteHeaders(httpClient);
+    httpClient.addInterceptor(new ApiErrorImpl());
     httpClient.addInterceptor(bodyInterceptor);
 
     return httpClient;

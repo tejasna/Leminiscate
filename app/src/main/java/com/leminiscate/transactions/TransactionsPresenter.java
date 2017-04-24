@@ -16,7 +16,7 @@ class TransactionsPresenter implements TransactionsContract.Presenter {
 
   private final TransactionsContract.View transactionsView;
 
-  private boolean mFirstLoad = true;
+  private boolean firstLoad = true;
 
   @Inject TransactionsPresenter(WalletRepository tasksRepository,
       TransactionsContract.View transactionsView) {
@@ -37,14 +37,18 @@ class TransactionsPresenter implements TransactionsContract.Presenter {
   }
 
   @Override public void loadTransactions(boolean forceUpdate) {
-    loadTransactions(forceUpdate || mFirstLoad, true);
-    mFirstLoad = false;
+    loadTransactions(forceUpdate || firstLoad, true);
+    firstLoad = false;
   }
 
   @Override public void result(int requestCode, int resultCode) {
     if (SpendActivity.REQUEST_NEW_TRANSACTION == requestCode && Activity.RESULT_OK == resultCode) {
       loadTransactions(true, true);
     }
+  }
+
+  @Override public void logout() {
+    repository.logout();
   }
 
   private void loadTransactions(boolean forceUpdate, final boolean showLoadingUI) {

@@ -90,4 +90,6 @@ public interface WalletDataSource {
   void deleteExistingBalance();
 
   void clearSubscriptions();
+
+  void logout();
 }
