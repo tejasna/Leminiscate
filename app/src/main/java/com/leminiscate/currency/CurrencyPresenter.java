@@ -8,19 +8,19 @@ import javax.inject.Inject;
 
 class CurrencyPresenter implements CurrencyContract.Presenter {
 
-  private final WalletRepository mRepository;
+  private final WalletRepository repository;
 
-  private final CurrencyContract.View mCurrencyView;
+  private final CurrencyContract.View currencyView;
 
   private boolean mFirstLoad = true;
 
   @Inject CurrencyPresenter(WalletRepository tasksRepository, CurrencyContract.View currencyView) {
-    mRepository = tasksRepository;
-    mCurrencyView = currencyView;
+    repository = tasksRepository;
+    this.currencyView = currencyView;
   }
 
   @Inject void setupListeners() {
-    mCurrencyView.setPresenter(this);
+    currencyView.setPresenter(this);
   }
 
   @Override public void loadCurrencies(boolean forceUpdate) {
@@ -29,7 +29,7 @@ class CurrencyPresenter implements CurrencyContract.Presenter {
   }
 
   @Override public void savePreferredCurrency(Currency currency) {
-    mRepository.savePreferredCurrency(currency);
+    repository.savePreferredCurrency(currency);
   }
 
   @Override public void start() {
@@ -37,29 +37,29 @@ class CurrencyPresenter implements CurrencyContract.Presenter {
   }
 
   @Override public void stop() {
-    mRepository.clearSubscriptions();
+    repository.clearSubscriptions();
   }
 
   private void loadCurrencies(boolean forceUpdate, final boolean showLoadingUI) {
 
     if (!showLoadingUI) {
       if (forceUpdate) {
-        mRepository.refreshTransactions();
+        repository.refreshTransactions();
       }
 
-      mRepository.getCurrencies(new WalletDataSource.LoadCurrenciesCallback() {
+      repository.getCurrencies(new WalletDataSource.LoadCurrenciesCallback() {
         @Override public void onCurrencyLoaded(List<Currency> currencies) {
-          if (!mCurrencyView.isActive()) {
+          if (!currencyView.isActive()) {
             return;
           }
           processCurrencies(currencies);
         }
 
         @Override public void onDataNotAvailable() {
-          if (!mCurrencyView.isActive()) {
+          if (!currencyView.isActive()) {
             return;
           }
-          mCurrencyView.showCurrenciesUnavailable();
+          currencyView.showCurrenciesUnavailable();
         }
       });
     }
@@ -67,9 +67,9 @@ class CurrencyPresenter implements CurrencyContract.Presenter {
 
   private void processCurrencies(List<Currency> currencies) {
     if (currencies == null) {
-      mCurrencyView.showCurrenciesUnavailable();
+      currencyView.showCurrenciesUnavailable();
     } else {
-      mCurrencyView.showCurrencies(currencies);
+      currencyView.showCurrencies(currencies);
     }
   }
 }

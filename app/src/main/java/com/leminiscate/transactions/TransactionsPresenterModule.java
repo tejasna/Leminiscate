@@ -4,13 +4,13 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module class TransactionsPresenterModule {
-  private final TransactionsContract.View mView;
+  private final TransactionsContract.View transactionsView;
 
   TransactionsPresenterModule(TransactionsContract.View view) {
-    mView = view;
+    transactionsView = view;
   }
 
   @Provides TransactionsContract.View provideTransactionsContractView() {
-    return mView;
+    return transactionsView;
   }
 }

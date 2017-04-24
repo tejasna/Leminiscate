@@ -35,9 +35,9 @@ public class SpendFragment extends Fragment implements SpendContract.View {
 
   private Unbinder unbinder;
 
-  private SpendContract.Presenter mPresenter;
+  private SpendContract.Presenter presenter;
 
-  private Dialog mNewTransactionDialog;
+  private Dialog newTransactionDialog;
 
   private AppCompatImageView preferredCurrencyImageView;
 
@@ -51,7 +51,7 @@ public class SpendFragment extends Fragment implements SpendContract.View {
 
   private ProgressBar progress;
 
-  private DisposableSubscriber<Boolean> _disposableObserver = null;
+  private DisposableSubscriber<Boolean> disposableObserver = null;
 
   private Flowable<CharSequence> descriptionChangeObservable;
 
@@ -75,7 +75,7 @@ public class SpendFragment extends Fragment implements SpendContract.View {
 
     unbinder = ButterKnife.bind(this, rootView);
 
-    mPresenter.start();
+    presenter.start();
 
     return rootView;
   }
@@ -106,20 +106,20 @@ public class SpendFragment extends Fragment implements SpendContract.View {
 
   @Override public void showAddedNewTransaction() {
     Snackbar.make(amountView, getString(R.string.spend_successful), Snackbar.LENGTH_SHORT).show();
-    if (mNewTransactionDialog.isShowing()) mNewTransactionDialog.cancel();
+    if (newTransactionDialog.isShowing()) newTransactionDialog.cancel();
     getActivity().setResult(Activity.RESULT_OK);
     getActivity().finish();
   }
 
   @Override public void showAddedNewTransactionError() {
     Snackbar.make(amountView, getString(R.string.spend_error), Snackbar.LENGTH_SHORT).show();
-    if (mNewTransactionDialog.isShowing()) mNewTransactionDialog.cancel();
+    if (newTransactionDialog.isShowing()) newTransactionDialog.cancel();
     getActivity().setResult(Activity.RESULT_CANCELED);
     getActivity().finish();
   }
 
   private void combineLatestEvents() {
-    _disposableObserver = new DisposableSubscriber<Boolean>() {
+    disposableObserver = new DisposableSubscriber<Boolean>() {
       @Override public void onNext(Boolean formValid) {
 
         buttonView.setEnabled(formValid);
@@ -147,11 +147,11 @@ public class SpendFragment extends Fragment implements SpendContract.View {
           }
 
           return descValid && amountValid;
-        }).subscribe(_disposableObserver);
+        }).subscribe(disposableObserver);
   }
 
   @Override public void showDialog(Currency preferredCurrency) {
-    if (mNewTransactionDialog == null || !mNewTransactionDialog.isShowing()) {
+    if (newTransactionDialog == null || !newTransactionDialog.isShowing()) {
 
       LayoutInflater factory = LayoutInflater.from(getContext());
 
@@ -165,7 +165,7 @@ public class SpendFragment extends Fragment implements SpendContract.View {
 
       progress = (ProgressBar) spendDialogView.findViewById(R.id.progress);
 
-      mNewTransactionDialog = new Dialog(getContext(), R.style.DialogTheme);
+      newTransactionDialog = new Dialog(getContext(), R.style.DialogTheme);
 
       spendDialogView.findViewById(R.id.view_group_currency)
           .setOnClickListener(
@@ -173,13 +173,13 @@ public class SpendFragment extends Fragment implements SpendContract.View {
                   CurrencyActivity.REQUEST_CURRENCY));
 
       spendDialogView.findViewById(R.id.btn_cancel)
-          .setOnClickListener(view -> mNewTransactionDialog.cancel());
+          .setOnClickListener(view -> newTransactionDialog.cancel());
 
       buttonView.setOnClickListener(view -> {
 
         if (preferredCurrency != null) {
 
-          mPresenter.spend(descriptionView.getText().toString().trim(),
+          presenter.spend(descriptionView.getText().toString().trim(),
               amountView.getText().toString().trim(),
               preferredCurrencyTextView.getText().toString().trim());
         } else {
@@ -213,13 +213,13 @@ public class SpendFragment extends Fragment implements SpendContract.View {
         RxTextView.textChanges(amountView).skip(1).toFlowable(BackpressureStrategy.LATEST);
     combineLatestEvents();
 
-    mNewTransactionDialog.setContentView(view);
-    mNewTransactionDialog.setOnCancelListener(dialogInterface -> getActivity().onBackPressed());
+    newTransactionDialog.setContentView(view);
+    newTransactionDialog.setOnCancelListener(dialogInterface -> getActivity().onBackPressed());
 
     //noinspection ConstantConditions
-    mNewTransactionDialog.getWindow()
+    newTransactionDialog.getWindow()
         .setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-    mNewTransactionDialog.show();
+    newTransactionDialog.show();
   }
 
   @Override public void showPreferredCurrency(Currency preferredCurrency) {
@@ -231,7 +231,7 @@ public class SpendFragment extends Fragment implements SpendContract.View {
   }
 
   @Override public void onActivityResult(int requestCode, int resultCode, Intent data) {
-    mPresenter.result(requestCode, resultCode);
+    presenter.result(requestCode, resultCode);
   }
 
   @Override public boolean isActive() {
@@ -239,12 +239,12 @@ public class SpendFragment extends Fragment implements SpendContract.View {
   }
 
   @Override public void setPresenter(SpendContract.Presenter presenter) {
-    mPresenter = checkNotNull(presenter);
+    this.presenter = checkNotNull(presenter);
   }
 
   @Override public void onDestroy() {
     super.onDestroy();
     unbinder.unbind();
-    _disposableObserver.dispose();
+    disposableObserver.dispose();
   }
 }

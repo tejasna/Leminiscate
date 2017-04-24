@@ -4,13 +4,13 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module class BalancePresenterModule {
-  private final BalanceContract.View mView;
+  private final BalanceContract.View view;
 
   BalancePresenterModule(BalanceContract.View view) {
-    mView = view;
+    this.view = view;
   }
 
   @Provides BalanceContract.View provideLoginContractView() {
-    return mView;
+    return view;
   }
 }

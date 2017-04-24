@@ -12,19 +12,19 @@ import javax.inject.Inject;
 
 class BalancePresenter implements BalanceContract.Presenter {
 
-  private final WalletRepository mRepository;
+  private final WalletRepository repository;
 
-  private final BalanceContract.View mBalanceView;
+  private final BalanceContract.View balanceView;
 
-  private boolean mFirstLoad = true;
+  private boolean firstLoad = true;
 
   @Inject BalancePresenter(WalletRepository tasksRepository, BalanceContract.View loginView) {
-    mRepository = tasksRepository;
-    mBalanceView = loginView;
+    repository = tasksRepository;
+    balanceView = loginView;
   }
 
   @Inject void setupListeners() {
-    mBalanceView.setPresenter(this);
+    balanceView.setPresenter(this);
   }
 
   @Override public void start() {
@@ -32,12 +32,12 @@ class BalancePresenter implements BalanceContract.Presenter {
   }
 
   @Override public void stop() {
-    mRepository.clearSubscriptions();
+    repository.clearSubscriptions();
   }
 
   @Override public void loadBalance(boolean forceUpdate) {
-    loadBalance(forceUpdate || mFirstLoad, true);
-    mFirstLoad = false;
+    loadBalance(forceUpdate || firstLoad, true);
+    firstLoad = false;
   }
 
   @Override public void result(int requestCode, int resultCode) {
@@ -48,51 +48,51 @@ class BalancePresenter implements BalanceContract.Presenter {
 
   private void loadBalance(boolean forceUpdate, final boolean showLoadingUI) {
     if (showLoadingUI) {
-      mBalanceView.setLoadingIndicator(true);
+      balanceView.setLoadingIndicator(true);
     }
     if (forceUpdate) {
-      mRepository.refreshTransactions();
+      repository.refreshTransactions();
     }
 
-    mRepository.getBalance(new WalletDataSource.LoadBalanceCallback() {
+    repository.getBalance(new WalletDataSource.LoadBalanceCallback() {
 
       @Override public void onBalanceLoaded(Balance balance) {
-        if (!mBalanceView.isActive()) {
+        if (!balanceView.isActive()) {
           return;
         }
         if (showLoadingUI) {
-          mBalanceView.setLoadingIndicator(false);
+          balanceView.setLoadingIndicator(false);
         }
 
         processBalance(balance);
       }
 
       @Override public void onDataNotAvailable() {
-        if (!mBalanceView.isActive()) {
+        if (!balanceView.isActive()) {
           return;
         }
-        mBalanceView.showLoadingBalanceError();
+        balanceView.showLoadingBalanceError();
       }
     });
   }
 
   private void processBalance(Balance balance) {
     if (balance == null) {
-      mBalanceView.showBalanceUnavailable();
+      balanceView.showBalanceUnavailable();
     } else {
 
-      mRepository.getPreferredCurrency(new WalletDataSource.LoadCurrenciesCallback() {
+      repository.getPreferredCurrency(new WalletDataSource.LoadCurrenciesCallback() {
         @Override public void onCurrencyLoaded(List<Currency> currencies) {
           if (currencies != null && currencies.size() > 0) {
             Balance preferredBalance =
                 CurrencyConverterUtil.convertAmountToPreferredCurrency(currencies.get(0),
                     balance.getBalance());
-            mBalanceView.showBalance(preferredBalance);
+            balanceView.showBalance(preferredBalance);
           }
         }
 
         @Override public void onDataNotAvailable() {
-          mBalanceView.showBalanceUnavailable();
+          balanceView.showBalanceUnavailable();
         }
       });
     }

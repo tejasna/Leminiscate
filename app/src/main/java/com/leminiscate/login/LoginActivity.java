@@ -9,7 +9,7 @@ import javax.inject.Inject;
 
 public class LoginActivity extends AppCompatActivity {
 
-  @Inject LoginPresenter mPresenter;
+  @Inject LoginPresenter presenter;
 
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);

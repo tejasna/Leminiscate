@@ -16,23 +16,23 @@ import static com.leminiscate.utils.PreConditions.checkNotNull;
 
 class SpendPresenter implements SpendContract.Presenter {
 
-  private final WalletRepository mRepository;
+  private final WalletRepository repository;
 
-  private final SpendContract.View mSpendView;
+  private final SpendContract.View spendView;
 
   @Inject SpendPresenter(WalletRepository tasksRepository, SpendContract.View loginView) {
-    mRepository = tasksRepository;
-    mSpendView = loginView;
+    repository = tasksRepository;
+    spendView = loginView;
   }
 
   @Inject void setupListeners() {
-    mSpendView.setPresenter(this);
+    spendView.setPresenter(this);
   }
 
   @Override public void start() {
-    mRepository.getPreferredCurrency(new WalletDataSource.LoadCurrenciesCallback() {
+    repository.getPreferredCurrency(new WalletDataSource.LoadCurrenciesCallback() {
       @Override public void onCurrencyLoaded(List<Currency> currencies) {
-        if (!mSpendView.isActive()) {
+        if (!spendView.isActive()) {
           return;
         }
         checkNotNull(currencies);
@@ -50,30 +50,30 @@ class SpendPresenter implements SpendContract.Presenter {
   }
 
   @Override public void stop() {
-    mRepository.clearSubscriptions();
+    repository.clearSubscriptions();
   }
 
   @Override public void showDialog(Currency preferredCurrency) {
-    mSpendView.showDialog(preferredCurrency);
+    spendView.showDialog(preferredCurrency);
   }
 
   @Override public void result(int requestCode, int resultCode) {
     if (CurrencyActivity.REQUEST_CURRENCY == requestCode && Activity.RESULT_OK == resultCode) {
-      mRepository.getPreferredCurrency(new WalletDataSource.LoadCurrenciesCallback() {
+      repository.getPreferredCurrency(new WalletDataSource.LoadCurrenciesCallback() {
         @Override public void onCurrencyLoaded(List<Currency> currencies) {
-          if (!mSpendView.isActive()) {
+          if (!spendView.isActive()) {
             return;
           }
           checkNotNull(currencies);
           if (currencies.size() > 0) {
-            mSpendView.showPreferredCurrency(currencies.get(0));
+            spendView.showPreferredCurrency(currencies.get(0));
           } else {
-            mSpendView.showPreferredCurrency(null);
+            spendView.showPreferredCurrency(null);
           }
         }
 
         @Override public void onDataNotAvailable() {
-          mSpendView.showPreferredCurrency(null);
+          spendView.showPreferredCurrency(null);
         }
       });
     }
@@ -81,7 +81,7 @@ class SpendPresenter implements SpendContract.Presenter {
 
   @Override public void spend(String description, String amountToSpend, String currency) {
 
-    mSpendView.setLoadingIndicator(true);
+    spendView.setLoadingIndicator(true);
 
     isBalanceGreaterThanAmountToSpend(description, amountToSpend, currency);
   }
@@ -92,27 +92,27 @@ class SpendPresenter implements SpendContract.Presenter {
     double balanceInInt = CurrencyConverterUtil.convertAmountToGBP(
         makeTransactionObject(description, amountToSpend, currency));
 
-    mRepository.isBalanceGreaterThan(new WalletDataSource.BalanceAvailabilityCallback() {
+    repository.isBalanceGreaterThan(new WalletDataSource.BalanceAvailabilityCallback() {
       @Override public void onBalanceSufficient() {
-        mRepository.newTransaction(makeTransactionObject(description, amountToSpend, currency),
+        repository.newTransaction(makeTransactionObject(description, amountToSpend, currency),
             new WalletDataSource.SaveTransactionCallback() {
               @Override public void onTransactionSaved() {
-                mSpendView.showAddedNewTransaction();
-                mRepository.refreshTransactions();
+                spendView.showAddedNewTransaction();
+                repository.refreshTransactions();
               }
 
               @Override public void onTransactionSaveFailed() {
-                mSpendView.showAddedNewTransactionError();
+                spendView.showAddedNewTransactionError();
               }
             });
       }
 
       @Override public void onBalanceInsufficient() {
-        mSpendView.showInsufficientBalance();
+        spendView.showInsufficientBalance();
       }
 
       @Override public void onBalanceAvailabilityError() {
-        mSpendView.showRequestBalanceError();
+        spendView.showRequestBalanceError();
       }
     }, balanceInInt);
   }

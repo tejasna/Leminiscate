@@ -19,7 +19,7 @@ import static com.leminiscate.utils.PreConditions.checkNotNull;
 
 public class LoginFragment extends Fragment implements LoginContract.View {
 
-  private LoginContract.Presenter mPresenter;
+  private LoginContract.Presenter presenter;
 
   private Unbinder unbinder;
 
@@ -44,17 +44,17 @@ public class LoginFragment extends Fragment implements LoginContract.View {
 
   @Override public void onResume() {
     super.onResume();
-    mPresenter.start();
+    presenter.start();
   }
 
   @Override public void onDestroy() {
     super.onDestroy();
     unbinder.unbind();
-    mPresenter.stop();
+    presenter.stop();
   }
 
   @Override public void setPresenter(LoginContract.Presenter presenter) {
-    mPresenter = checkNotNull(presenter);
+    this.presenter = checkNotNull(presenter);
   }
 
   @Override public void showActiveUser(boolean active) {
@@ -72,6 +72,6 @@ public class LoginFragment extends Fragment implements LoginContract.View {
   }
 
   @OnClick(R.id.img_reload) public void reloadFrag() {
-    mPresenter.start();
+    presenter.start();
   }
 }

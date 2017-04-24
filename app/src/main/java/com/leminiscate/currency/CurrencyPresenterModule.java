@@ -4,13 +4,13 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module class CurrencyPresenterModule {
-  private final CurrencyContract.View mView;
+  private final CurrencyContract.View currencyView;
 
   CurrencyPresenterModule(CurrencyContract.View view) {
-    mView = view;
+    currencyView = view;
   }
 
   @Provides CurrencyContract.View provideLoginContractView() {
-    return mView;
+    return currencyView;
   }
 }

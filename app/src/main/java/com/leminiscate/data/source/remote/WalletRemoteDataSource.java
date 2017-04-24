@@ -179,18 +179,6 @@ import static io.reactivex.Observable.empty;
     compositeSubscription.clear();
   }
 
-  /**
-   * Note: {@link LoadTransactionsCallback# onDataNotAvailable()} is never fired. In a real remote
-   * data
-   * source implementation, this would be fired if the server can't be contacted or the server
-   * returns an error.
-   */
-
-  /**
-   * Note: {@link "GetTaskCallback#onDataNotAvailable()} is never fired. In a real remote data
-   * source implementation, this would be fired if the server can't be contacted or the server
-   * returns an error.
-   */
 
   @Override public void refreshTransactions() {
     // Not required because the {@link TransactionsRepository} handles the logic of refreshing the

@@ -12,20 +12,20 @@ import javax.inject.Inject;
 
 public class TransactionsDetailPresenter implements TransactionsDetailContract.Presenter {
 
-  private final WalletRepository mRepository;
+  private final WalletRepository repository;
 
-  private final TransactionsDetailContract.View mTransactionsView;
+  private final TransactionsDetailContract.View transactionsView;
 
   private boolean mFirstLoad = true;
 
   @Inject TransactionsDetailPresenter(WalletRepository tasksRepository,
       TransactionsDetailContract.View transactionsView) {
-    mRepository = tasksRepository;
-    mTransactionsView = transactionsView;
+    repository = tasksRepository;
+    this.transactionsView = transactionsView;
   }
 
   @Inject void setupListeners() {
-    mTransactionsView.setPresenter(this);
+    transactionsView.setPresenter(this);
   }
 
   @Override public void loadTransactions(boolean forceUpdate) {
@@ -44,49 +44,49 @@ public class TransactionsDetailPresenter implements TransactionsDetailContract.P
   }
 
   @Override public void stop() {
-    mRepository.clearSubscriptions();
+    repository.clearSubscriptions();
   }
 
   private void loadTransactions(boolean forceUpdate, final boolean showLoadingUI) {
     if (showLoadingUI) {
-      mTransactionsView.setLoadingIndicator(true);
+      transactionsView.setLoadingIndicator(true);
     }
     if (forceUpdate) {
-      mRepository.refreshTransactions();
+      repository.refreshTransactions();
     }
 
-    mRepository.getTransactions(new WalletDataSource.LoadTransactionsCallback() {
+    repository.getTransactions(new WalletDataSource.LoadTransactionsCallback() {
       @Override public void onTransactionsLoaded(List<Transaction> transactions) {
 
-        if (!mTransactionsView.isActive()) {
+        if (!transactionsView.isActive()) {
           return;
         }
         if (showLoadingUI) {
-          mTransactionsView.setLoadingIndicator(false);
+          transactionsView.setLoadingIndicator(false);
         }
 
         processTransactions(transactions);
       }
 
       @Override public void onDataNotAvailable() {
-        if (!mTransactionsView.isActive()) {
+        if (!transactionsView.isActive()) {
           return;
         }
-        mTransactionsView.showLoadingTransactionsError();
+        transactionsView.showLoadingTransactionsError();
       }
     });
   }
 
   private void processTransactions(List<Transaction> transactions) {
     if (transactions.isEmpty()) {
-      mTransactionsView.showNoTransactions();
+      transactionsView.showNoTransactions();
     } else {
       Collections.reverse(transactions);
       for (Transaction transaction : transactions) {
         transaction.setAmountInNativeRate(String.valueOf(
             CurrencyConverterUtil.round(CurrencyConverterUtil.getAmountFromGBPTO(transaction), 2)));
       }
-      mTransactionsView.showTransactions(transactions);
+      transactionsView.showTransactions(transactions);
     }
   }
 }

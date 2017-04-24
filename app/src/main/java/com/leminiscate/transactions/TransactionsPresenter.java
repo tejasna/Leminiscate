@@ -12,20 +12,20 @@ import javax.inject.Inject;
 
 class TransactionsPresenter implements TransactionsContract.Presenter {
 
-  private final WalletRepository mRepository;
+  private final WalletRepository repository;
 
-  private final TransactionsContract.View mTransactionsView;
+  private final TransactionsContract.View transactionsView;
 
   private boolean mFirstLoad = true;
 
   @Inject TransactionsPresenter(WalletRepository tasksRepository,
       TransactionsContract.View transactionsView) {
-    mRepository = tasksRepository;
-    mTransactionsView = transactionsView;
+    repository = tasksRepository;
+    this.transactionsView = transactionsView;
   }
 
   @Inject void setupListeners() {
-    mTransactionsView.setPresenter(this);
+    transactionsView.setPresenter(this);
   }
 
   @Override public void start() {
@@ -33,7 +33,7 @@ class TransactionsPresenter implements TransactionsContract.Presenter {
   }
 
   @Override public void stop() {
-    mRepository.clearSubscriptions();
+    repository.clearSubscriptions();
   }
 
   @Override public void loadTransactions(boolean forceUpdate) {
@@ -49,36 +49,36 @@ class TransactionsPresenter implements TransactionsContract.Presenter {
 
   private void loadTransactions(boolean forceUpdate, final boolean showLoadingUI) {
     if (showLoadingUI) {
-      mTransactionsView.setLoadingIndicator(true);
+      transactionsView.setLoadingIndicator(true);
     }
     if (forceUpdate) {
-      mRepository.refreshTransactions();
+      repository.refreshTransactions();
     }
 
-    mRepository.getTransactions(new WalletDataSource.LoadTransactionsCallback() {
+    repository.getTransactions(new WalletDataSource.LoadTransactionsCallback() {
       @Override public void onTransactionsLoaded(List<Transaction> transactions) {
-        if (!mTransactionsView.isActive()) {
+        if (!transactionsView.isActive()) {
           return;
         }
         if (showLoadingUI) {
-          mTransactionsView.setLoadingIndicator(false);
+          transactionsView.setLoadingIndicator(false);
         }
 
         processTransactions(transactions);
       }
 
       @Override public void onDataNotAvailable() {
-        if (!mTransactionsView.isActive()) {
+        if (!transactionsView.isActive()) {
           return;
         }
-        mTransactionsView.showLoadingTransactionsError();
+        transactionsView.showLoadingTransactionsError();
       }
     });
   }
 
   private void processTransactions(List<Transaction> transactions) {
     if (transactions.isEmpty()) {
-      mTransactionsView.showNoTransactions();
+      transactionsView.showNoTransactions();
     } else {
       Collections.reverse(transactions);
       for (Transaction transaction : transactions) {
@@ -86,7 +86,7 @@ class TransactionsPresenter implements TransactionsContract.Presenter {
             CurrencyConverterUtil.round(CurrencyConverterUtil.getAmountFromGBPTO(transaction), 2)));
       }
     }
-    mTransactionsView.showTransactions(transactions.subList(0, 4));
+    transactionsView.showTransactions(transactions.subList(0, 4));
   }
 }
 

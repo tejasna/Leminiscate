@@ -34,7 +34,7 @@ public class BalanceFragment extends Fragment implements BalanceContract.View {
 
   private Unbinder unbinder;
 
-  private BalanceContract.Presenter mPresenter;
+  private BalanceContract.Presenter presenter;
 
   public BalanceFragment() {
   }
@@ -50,7 +50,7 @@ public class BalanceFragment extends Fragment implements BalanceContract.View {
 
     unbinder = ButterKnife.bind(this, rootView);
 
-    swipeRefreshLayout.setOnRefreshListener(() -> mPresenter.loadBalance(true));
+    swipeRefreshLayout.setOnRefreshListener(() -> presenter.loadBalance(true));
 
     return rootView;
   }
@@ -62,11 +62,11 @@ public class BalanceFragment extends Fragment implements BalanceContract.View {
 
   @Override public void onResume() {
     super.onResume();
-    mPresenter.start();
+    presenter.start();
   }
 
   @Override public void setPresenter(BalanceContract.Presenter presenter) {
-    mPresenter = checkNotNull(presenter);
+    this.presenter = checkNotNull(presenter);
   }
 
   @Override public void setLoadingIndicator(boolean active) {
@@ -74,7 +74,7 @@ public class BalanceFragment extends Fragment implements BalanceContract.View {
   }
 
   @Override public void onActivityResult(int requestCode, int resultCode, Intent data) {
-    mPresenter.result(requestCode, resultCode);
+    presenter.result(requestCode, resultCode);
   }
 
   @Override public void showBalance(Balance balance) {
@@ -102,6 +102,6 @@ public class BalanceFragment extends Fragment implements BalanceContract.View {
   @Override public void onDestroy() {
     super.onDestroy();
     unbinder.unbind();
-    mPresenter.stop();
+    presenter.stop();
   }
 }

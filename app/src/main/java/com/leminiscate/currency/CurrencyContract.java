@@ -5,10 +5,8 @@ import com.leminiscate.BaseView;
 import com.leminiscate.data.Currency;
 import java.util.List;
 
-public class CurrencyContract {
+class CurrencyContract {
   interface View extends BaseView<CurrencyContract.Presenter> {
-
-    void showLoadingCurrenciesError();
 
     void showCurrenciesUnavailable();
 

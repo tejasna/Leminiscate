@@ -11,7 +11,7 @@ public class SpendActivity extends AppCompatActivity {
 
   public static final int REQUEST_NEW_TRANSACTION = 2;
 
-  @Inject SpendPresenter mSpendPresenter;
+  @Inject SpendPresenter spendPresenter;
 
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);

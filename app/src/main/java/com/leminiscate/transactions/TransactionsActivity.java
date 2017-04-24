@@ -22,7 +22,7 @@ import javax.inject.Inject;
 
 public class TransactionsActivity extends AppCompatActivity {
 
-  @Inject TransactionsPresenter mPresenter;
+  @Inject TransactionsPresenter presenter;
 
   @BindView(R.id.toolbar) Toolbar toolbar;
 
@@ -63,7 +63,7 @@ public class TransactionsActivity extends AppCompatActivity {
   }
 
   @Override public void onActivityResult(int requestCode, int resultCode, Intent data) {
-    mPresenter.result(requestCode, resultCode);
+    presenter.result(requestCode, resultCode);
   }
 
   @Override public boolean onCreateOptionsMenu(Menu menu) {

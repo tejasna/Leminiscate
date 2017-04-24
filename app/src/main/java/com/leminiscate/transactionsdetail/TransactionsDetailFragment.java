@@ -31,9 +31,9 @@ import static com.leminiscate.utils.PreConditions.checkNotNull;
 public class TransactionsDetailFragment extends Fragment
     implements TransactionsDetailContract.View {
 
-  private TransactionsDetailContract.Presenter mPresenter;
+  private TransactionsDetailContract.Presenter presenter;
 
-  private TransactionsDetailFragment.TransactionsAdapter mRecyclerAdapter;
+  private TransactionsDetailFragment.TransactionsAdapter recyclerAdapter;
 
   private Unbinder unbinder;
 
@@ -50,7 +50,7 @@ public class TransactionsDetailFragment extends Fragment
 
   @Override public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    mRecyclerAdapter = new TransactionsDetailFragment.TransactionsAdapter(new ArrayList<>(0));
+    recyclerAdapter = new TransactionsDetailFragment.TransactionsAdapter(new ArrayList<>(0));
   }
 
   @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -59,25 +59,25 @@ public class TransactionsDetailFragment extends Fragment
 
     unbinder = ButterKnife.bind(this, rootView);
 
-    swipeRefreshLayout.setOnRefreshListener(() -> mPresenter.loadTransactions(true));
+    swipeRefreshLayout.setOnRefreshListener(() -> presenter.loadTransactions(true));
 
     LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
     layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
     recyclerView.addItemDecoration(
         new TransactionsDetailFragment.TransactionDividerItemDecoration(getContext()));
     recyclerView.setLayoutManager(layoutManager);
-    recyclerView.setAdapter(mRecyclerAdapter);
+    recyclerView.setAdapter(recyclerAdapter);
 
     return rootView;
   }
 
   @Override public void onResume() {
     super.onResume();
-    mPresenter.start();
+    presenter.start();
   }
 
   @Override public void setPresenter(TransactionsDetailContract.Presenter presenter) {
-    mPresenter = checkNotNull(presenter);
+    this.presenter = checkNotNull(presenter);
   }
 
   @Override public void setLoadingIndicator(boolean active) {
@@ -86,7 +86,7 @@ public class TransactionsDetailFragment extends Fragment
 
   @Override public void showTransactions(List<Transaction> transactions) {
     swipeRefreshLayout.setRefreshing(false);
-    mRecyclerAdapter.replaceData(transactions);
+    recyclerAdapter.replaceData(transactions);
   }
 
   @Override public void showNoTransactions() {
@@ -108,7 +108,7 @@ public class TransactionsDetailFragment extends Fragment
   @Override public void onDestroy() {
     super.onDestroy();
     unbinder.unbind();
-    mPresenter.stop();
+    presenter.stop();
   }
 
   private static class TransactionsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {

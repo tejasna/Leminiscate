@@ -31,9 +31,9 @@ import static com.leminiscate.utils.PreConditions.checkNotNull;
 public class CurrencyFragment extends Fragment
     implements CurrencyContract.View, CurrencyClickListener {
 
-  private CurrencyContract.Presenter mPresenter;
+  private CurrencyContract.Presenter presenter;
 
-  private CurrencyAdapter mRecyclerAdapter;
+  private CurrencyAdapter recyclerAdapter;
 
   private Unbinder unbinder;
 
@@ -48,7 +48,7 @@ public class CurrencyFragment extends Fragment
 
   @Override public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    mRecyclerAdapter = new CurrencyAdapter(new ArrayList<>(0), this);
+    recyclerAdapter = new CurrencyAdapter(new ArrayList<>(0), this);
   }
 
   @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -61,18 +61,14 @@ public class CurrencyFragment extends Fragment
     layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
     recyclerView.addItemDecoration(new CurrencyDividerItemDecoration(getContext()));
     recyclerView.setLayoutManager(layoutManager);
-    recyclerView.setAdapter(mRecyclerAdapter);
+    recyclerView.setAdapter(recyclerAdapter);
 
     return rootView;
   }
 
   @Override public void onStart() {
     super.onStart();
-    mPresenter.start();
-  }
-
-  @Override public void showLoadingCurrenciesError() {
-    Snackbar.make(recyclerView, getString(R.string.currency_error), Snackbar.LENGTH_SHORT).show();
+    presenter.start();
   }
 
   @Override public void showCurrenciesUnavailable() {
@@ -80,7 +76,7 @@ public class CurrencyFragment extends Fragment
   }
 
   @Override public void showCurrencies(List<Currency> currencies) {
-    mRecyclerAdapter.replaceData(currencies);
+    recyclerAdapter.replaceData(currencies);
   }
 
   @Override public boolean isActive() {
@@ -88,11 +84,11 @@ public class CurrencyFragment extends Fragment
   }
 
   @Override public void setPresenter(CurrencyContract.Presenter presenter) {
-    mPresenter = checkNotNull(presenter);
+    this.presenter = checkNotNull(presenter);
   }
 
   @Override public void onClick(Currency currency) {
-    mPresenter.savePreferredCurrency(currency);
+    presenter.savePreferredCurrency(currency);
     getActivity().setResult(Activity.RESULT_OK);
     getActivity().finish();
   }

@@ -16,7 +16,7 @@ public class CurrencyActivity extends AppCompatActivity {
 
   public static final int REQUEST_CURRENCY = 1;
 
-  @Inject CurrencyPresenter mPresenter;
+  @Inject CurrencyPresenter presenter;
 
   @BindView(R.id.toolbar) Toolbar toolbar;
 

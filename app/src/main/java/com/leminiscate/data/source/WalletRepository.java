@@ -16,29 +16,29 @@ import static com.leminiscate.utils.PreConditions.checkNotNull;
 
 @Singleton public class WalletRepository implements WalletDataSource {
 
-  private final WalletDataSource mRemoteDataSource;
+  private final WalletDataSource remoteDataSource;
 
-  private final WalletDataSource mLocalDataSource;
+  private final WalletDataSource localDataSource;
 
-  private Map<String, Transaction> mCachedTransactions;
+  private Map<String, Transaction> cachedTransactions;
 
-  private Map<String, Currency> mCachedCurrencies;
+  private Map<String, Currency> cachedCurrencies;
 
-  private Balance mCachedBalance;
+  private Balance cachedBalance;
 
-  private Currency mCachedPreferredCurrency;
+  private Currency cachedPreferredCurrency;
 
-  private boolean mCacheIsDirty = false;
+  private boolean cacheIsDirty = false;
 
   @Inject WalletRepository(@Remote WalletDataSource tasksRemoteDataSource,
       @Local WalletDataSource tasksLocalDataSource) {
-    mRemoteDataSource = tasksRemoteDataSource;
-    mLocalDataSource = tasksLocalDataSource;
+    remoteDataSource = tasksRemoteDataSource;
+    localDataSource = tasksLocalDataSource;
   }
 
   @Override public void login(@NonNull LoginCallback callback) {
 
-    mLocalDataSource.checkLoginState(new LoginCallback() {
+    localDataSource.checkLoginState(new LoginCallback() {
       @Override public void userExists() {
         callback.userExists();
       }
@@ -48,40 +48,34 @@ import static com.leminiscate.utils.PreConditions.checkNotNull;
       }
 
       @Override public void onLoginFailure() {
-        mRemoteDataSource.login(callback);
+        remoteDataSource.login(callback);
       }
     });
   }
 
   @Override public void saveLoginState(@NonNull Login login) {
-    mLocalDataSource.saveLoginState(login);
+    localDataSource.saveLoginState(login);
   }
 
   @Override public void clearLoginState() {
-    mLocalDataSource.clearLoginState();
+    localDataSource.clearLoginState();
   }
 
-  /**
-   * Gets tasks from cache, local data source (SQLite) or remote data source, whichever is
-   * available first.
-   * <p>
-   * Note: {@link "LoadTasksCallback#onDataNotAvailable()} is fired if all data sources fail to
-   * get the data.
-   */
+
   @Override public void getTransactions(@NonNull LoadTransactionsCallback callback) {
-    if (mCachedTransactions != null && !mCacheIsDirty) {
-      callback.onTransactionsLoaded(new ArrayList<>(mCachedTransactions.values()));
+    if (cachedTransactions != null && !cacheIsDirty) {
+      callback.onTransactionsLoaded(new ArrayList<>(cachedTransactions.values()));
       return;
     }
 
-    if (mCacheIsDirty) {
+    if (cacheIsDirty) {
       getTransactionsFromRemoteDataSource(callback);
     } else {
-      mLocalDataSource.getTransactions(new LoadTransactionsCallback() {
+      localDataSource.getTransactions(new LoadTransactionsCallback() {
         @Override public void onTransactionsLoaded(List<Transaction> transactions) {
           checkNotNull(transactions);
           refreshCache(transactions);
-          callback.onTransactionsLoaded(new ArrayList<>(mCachedTransactions.values()));
+          callback.onTransactionsLoaded(new ArrayList<>(cachedTransactions.values()));
         }
 
         @Override public void onDataNotAvailable() {
@@ -93,34 +87,34 @@ import static com.leminiscate.utils.PreConditions.checkNotNull;
 
   @Override public void saveTransactions(@NonNull List<Transaction> transactions) {
     checkNotNull(transactions);
-    mRemoteDataSource.saveTransactions(transactions);
-    mLocalDataSource.saveTransactions(transactions);
+    remoteDataSource.saveTransactions(transactions);
+    localDataSource.saveTransactions(transactions);
 
     // Do in memory cache update to keep the app UI up to date
-    if (mCachedTransactions == null) {
-      mCachedTransactions = new LinkedHashMap<>();
+    if (cachedTransactions == null) {
+      cachedTransactions = new LinkedHashMap<>();
     }
     for (Transaction transaction : transactions) {
-      mCachedTransactions.put(transaction.getId(), transaction);
+      cachedTransactions.put(transaction.getId(), transaction);
     }
   }
 
   @Override
   public void newTransaction(@NonNull Transaction transaction, SaveTransactionCallback callback) {
     checkNotNull(transaction);
-    mRemoteDataSource.newTransaction(transaction, callback);
+    remoteDataSource.newTransaction(transaction, callback);
   }
 
   @Override public void getBalance(@NonNull LoadBalanceCallback callback) {
-    if (mCachedBalance != null && !mCacheIsDirty) {
-      callback.onBalanceLoaded(mCachedBalance);
+    if (cachedBalance != null && !cacheIsDirty) {
+      callback.onBalanceLoaded(cachedBalance);
       return;
     }
 
-    if (mCacheIsDirty) {
+    if (cacheIsDirty) {
       getBalanceFromRemoteDataSource(callback);
     } else {
-      mLocalDataSource.getBalance(new LoadBalanceCallback() {
+      localDataSource.getBalance(new LoadBalanceCallback() {
         @Override public void onBalanceLoaded(Balance balance) {
           checkNotNull(balance);
           refreshBalanceCache(balance);
@@ -136,26 +130,26 @@ import static com.leminiscate.utils.PreConditions.checkNotNull;
 
   @Override public void saveBalance(@NonNull Balance balance) {
     checkNotNull(balance);
-    mRemoteDataSource.saveBalance(balance);
-    mLocalDataSource.saveBalance(balance);
+    remoteDataSource.saveBalance(balance);
+    localDataSource.saveBalance(balance);
 
-    if (mCachedBalance == null) {
-      mCachedBalance = new Balance();
+    if (cachedBalance == null) {
+      cachedBalance = new Balance();
     }
-    mCachedBalance = balance;
+    cachedBalance = balance;
   }
 
   @Override public void getCurrencies(@NonNull LoadCurrenciesCallback callback) {
 
-    if (mCachedCurrencies != null && !mCacheIsDirty) {
-      callback.onCurrencyLoaded(new ArrayList<>(mCachedCurrencies.values()));
+    if (cachedCurrencies != null && !cacheIsDirty) {
+      callback.onCurrencyLoaded(new ArrayList<>(cachedCurrencies.values()));
       return;
     }
 
-    if (mCacheIsDirty) {
+    if (cacheIsDirty) {
       getCurrenciesFromRemoteDataSource(callback);
     } else {
-      mLocalDataSource.getCurrencies(new LoadCurrenciesCallback() {
+      localDataSource.getCurrencies(new LoadCurrenciesCallback() {
 
         @Override public void onCurrencyLoaded(List<Currency> currencies) {
           checkNotNull(currencies);
@@ -172,24 +166,24 @@ import static com.leminiscate.utils.PreConditions.checkNotNull;
 
   @Override public void saveCurrencies(@NonNull List<Currency> currencies) {
     checkNotNull(currencies);
-    mRemoteDataSource.saveCurrencies(currencies);
-    mLocalDataSource.saveCurrencies(currencies);
+    remoteDataSource.saveCurrencies(currencies);
+    localDataSource.saveCurrencies(currencies);
 
-    if (mCachedCurrencies == null) {
-      mCachedCurrencies = new LinkedHashMap<>();
+    if (cachedCurrencies == null) {
+      cachedCurrencies = new LinkedHashMap<>();
     }
     for (Currency currency : currencies) {
-      mCachedCurrencies.put(currency.getName(), currency);
+      cachedCurrencies.put(currency.getName(), currency);
     }
   }
 
   @Override public void getPreferredCurrency(@NonNull LoadCurrenciesCallback callback) {
-    if (!mCacheIsDirty && mCachedPreferredCurrency != null) {
+    if (!cacheIsDirty && cachedPreferredCurrency != null) {
       ArrayList<Currency> currencies = new ArrayList<>(1);
-      currencies.add(mCachedPreferredCurrency);
+      currencies.add(cachedPreferredCurrency);
       callback.onCurrencyLoaded(currencies);
     } else {
-      mLocalDataSource.getPreferredCurrency(new LoadCurrenciesCallback() {
+      localDataSource.getPreferredCurrency(new LoadCurrenciesCallback() {
         @Override public void onCurrencyLoaded(List<Currency> currencies) {
           checkNotNull(currencies);
           callback.onCurrencyLoaded(currencies);
@@ -204,18 +198,18 @@ import static com.leminiscate.utils.PreConditions.checkNotNull;
 
   @Override public void savePreferredCurrency(@NonNull Currency currency) {
     checkNotNull(currency);
-    mRemoteDataSource.savePreferredCurrency(currency);
-    mLocalDataSource.savePreferredCurrency(currency);
+    remoteDataSource.savePreferredCurrency(currency);
+    localDataSource.savePreferredCurrency(currency);
 
-    if (mCachedPreferredCurrency == null) {
-      mCachedPreferredCurrency = new Currency();
+    if (cachedPreferredCurrency == null) {
+      cachedPreferredCurrency = new Currency();
     }
-    mCachedPreferredCurrency = currency;
+    cachedPreferredCurrency = currency;
   }
 
   @Override
   public void isBalanceGreaterThan(@NonNull BalanceAvailabilityCallback callback, double amount) {
-    mRemoteDataSource.getBalance(new LoadBalanceCallback() {
+    remoteDataSource.getBalance(new LoadBalanceCallback() {
       @Override public void onBalanceLoaded(Balance balance) {
         refreshBalanceCache(balance);
         refreshLocalDataSource(balance);
@@ -235,16 +229,16 @@ import static com.leminiscate.utils.PreConditions.checkNotNull;
   }
 
   private void getBalanceFromRemoteDataSource(@NonNull LoadBalanceCallback callback) {
-    mRemoteDataSource.getBalance(new LoadBalanceCallback() {
+    remoteDataSource.getBalance(new LoadBalanceCallback() {
       @Override public void onBalanceLoaded(Balance balance) {
         refreshBalanceCache(balance);
         refreshLocalDataSource(balance);
-        callback.onBalanceLoaded(mCachedBalance);
+        callback.onBalanceLoaded(cachedBalance);
       }
 
       @Override public void onDataNotAvailable() {
         callback.onDataNotAvailable();
-        mLocalDataSource.getBalance(new LoadBalanceCallback() {
+        localDataSource.getBalance(new LoadBalanceCallback() {
           @Override public void onBalanceLoaded(Balance balance) {
             checkNotNull(balance);
             refreshBalanceCache(balance);
@@ -261,21 +255,21 @@ import static com.leminiscate.utils.PreConditions.checkNotNull;
 
   private void getTransactionsFromRemoteDataSource(
       @NonNull final LoadTransactionsCallback callback) {
-    mRemoteDataSource.getTransactions(new LoadTransactionsCallback() {
+    remoteDataSource.getTransactions(new LoadTransactionsCallback() {
       @Override public void onTransactionsLoaded(List<Transaction> transactions) {
         checkNotNull(transactions);
         refreshCache(transactions);
-        mLocalDataSource.saveTransactions(transactions);
-        callback.onTransactionsLoaded(new ArrayList<>(mCachedTransactions.values()));
+        localDataSource.saveTransactions(transactions);
+        callback.onTransactionsLoaded(new ArrayList<>(cachedTransactions.values()));
       }
 
       @Override public void onDataNotAvailable() {
         callback.onDataNotAvailable();
-        mLocalDataSource.getTransactions(new LoadTransactionsCallback() {
+        localDataSource.getTransactions(new LoadTransactionsCallback() {
           @Override public void onTransactionsLoaded(List<Transaction> transactions) {
             checkNotNull(transactions);
             refreshCache(transactions);
-            callback.onTransactionsLoaded(new ArrayList<>(mCachedTransactions.values()));
+            callback.onTransactionsLoaded(new ArrayList<>(cachedTransactions.values()));
           }
 
           @Override public void onDataNotAvailable() {
@@ -287,20 +281,20 @@ import static com.leminiscate.utils.PreConditions.checkNotNull;
   }
 
   private void getCurrenciesFromRemoteDataSource(@NonNull final LoadCurrenciesCallback callback) {
-    mRemoteDataSource.getCurrencies(new LoadCurrenciesCallback() {
+    remoteDataSource.getCurrencies(new LoadCurrenciesCallback() {
 
       @Override public void onCurrencyLoaded(List<Currency> currencies) {
         refreshCurrencyCache(currencies);
-        callback.onCurrencyLoaded(new ArrayList<>(mCachedCurrencies.values()));
+        callback.onCurrencyLoaded(new ArrayList<>(cachedCurrencies.values()));
       }
 
       @Override public void onDataNotAvailable() {
         callback.onDataNotAvailable();
-        mLocalDataSource.getTransactions(new LoadTransactionsCallback() {
+        localDataSource.getTransactions(new LoadTransactionsCallback() {
           @Override public void onTransactionsLoaded(List<Transaction> transactions) {
             checkNotNull(transactions);
             refreshCache(transactions);
-            callback.onCurrencyLoaded(new ArrayList<>(mCachedCurrencies.values()));
+            callback.onCurrencyLoaded(new ArrayList<>(cachedCurrencies.values()));
           }
 
           @Override public void onDataNotAvailable() {
@@ -312,26 +306,26 @@ import static com.leminiscate.utils.PreConditions.checkNotNull;
   }
 
   @Override public void refreshTransactions() {
-    mCacheIsDirty = true;
+    cacheIsDirty = true;
   }
 
   @Override public void clearSubscriptions() {
-    mRemoteDataSource.clearSubscriptions();
+    remoteDataSource.clearSubscriptions();
   }
 
   @Override public void deleteExistingBalance() {
-    mRemoteDataSource.deleteExistingBalance();
-    mLocalDataSource.deleteExistingBalance();
+    remoteDataSource.deleteExistingBalance();
+    localDataSource.deleteExistingBalance();
   }
 
   @Override public void deleteAllTransactions() {
-    mRemoteDataSource.deleteAllTransactions();
-    mLocalDataSource.deleteAllTransactions();
+    remoteDataSource.deleteAllTransactions();
+    localDataSource.deleteAllTransactions();
 
-    if (mCachedTransactions == null) {
-      mCachedTransactions = new LinkedHashMap<>();
+    if (cachedTransactions == null) {
+      cachedTransactions = new LinkedHashMap<>();
     }
-    mCachedTransactions.clear();
+    cachedTransactions.clear();
   }
 
   @Override public void checkLoginState(@NonNull LoginCallback callback) {
@@ -341,37 +335,37 @@ import static com.leminiscate.utils.PreConditions.checkNotNull;
   //Helper methods to refresh transactions present in memory
 
   private void refreshCache(List<Transaction> transactions) {
-    if (mCachedTransactions == null) {
-      mCachedTransactions = new LinkedHashMap<>();
+    if (cachedTransactions == null) {
+      cachedTransactions = new LinkedHashMap<>();
     }
-    mCachedTransactions.clear();
+    cachedTransactions.clear();
     for (Transaction transaction : transactions) {
-      mCachedTransactions.put(transaction.getId(), transaction);
+      cachedTransactions.put(transaction.getId(), transaction);
     }
-    mCacheIsDirty = false;
+    cacheIsDirty = false;
   }
 
   private void refreshCurrencyCache(List<Currency> currencies) {
-    if (mCachedCurrencies == null) {
-      mCachedCurrencies = new LinkedHashMap<>();
+    if (cachedCurrencies == null) {
+      cachedCurrencies = new LinkedHashMap<>();
     }
-    mCachedCurrencies.clear();
+    cachedCurrencies.clear();
     for (Currency currency : currencies) {
-      mCachedCurrencies.put(currency.getName(), currency);
+      cachedCurrencies.put(currency.getName(), currency);
     }
-    mCacheIsDirty = false;
+    cacheIsDirty = false;
   }
 
   private void refreshBalanceCache(Balance balance) {
-    if (mCachedBalance == null) {
-      mCachedBalance = new Balance();
+    if (cachedBalance == null) {
+      cachedBalance = new Balance();
     }
-    mCachedBalance.setBalance(balance.getBalance());
-    mCachedBalance.setCurrency(balance.getCurrency());
+    cachedBalance.setBalance(balance.getBalance());
+    cachedBalance.setCurrency(balance.getCurrency());
   }
 
   private void refreshLocalDataSource(Balance balance) {
-    mLocalDataSource.deleteExistingBalance();
-    mLocalDataSource.saveBalance(balance);
+    localDataSource.deleteExistingBalance();
+    localDataSource.saveBalance(balance);
   }
 }

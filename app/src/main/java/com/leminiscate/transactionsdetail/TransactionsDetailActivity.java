@@ -17,7 +17,7 @@ import javax.inject.Inject;
 
 public class TransactionsDetailActivity extends AppCompatActivity {
 
-  @Inject TransactionsDetailPresenter mPresenter;
+  @Inject TransactionsDetailPresenter presenter;
 
   @BindView(R.id.toolbar) Toolbar toolbar;
 
@@ -60,7 +60,7 @@ public class TransactionsDetailActivity extends AppCompatActivity {
   }
 
   @Override public void onActivityResult(int requestCode, int resultCode, Intent data) {
-    mPresenter.result(requestCode, resultCode);
+    presenter.result(requestCode, resultCode);
   }
 
   @Override public boolean onSupportNavigateUp() {

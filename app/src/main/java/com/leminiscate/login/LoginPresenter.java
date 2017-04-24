@@ -8,45 +8,45 @@ import javax.inject.Inject;
 
 class LoginPresenter implements LoginContract.Presenter {
 
-  private final WalletRepository mRepository;
+  private final WalletRepository repository;
 
-  private final LoginContract.View mLoginView;
+  private final LoginContract.View loginView;
 
   @Inject LoginPresenter(WalletRepository tasksRepository, LoginContract.View loginView) {
-    mRepository = tasksRepository;
-    mLoginView = loginView;
+    repository = tasksRepository;
+    this.loginView = loginView;
   }
 
   @Inject void setupListeners() {
-    mLoginView.setPresenter(this);
+    loginView.setPresenter(this);
   }
 
   @Override public void start() {
 
     login(new WalletDataSource.LoginCallback() {
       @Override public void userExists() {
-        mLoginView.showActiveUser(true);
+        loginView.showActiveUser(true);
       }
 
       @Override public void onLoginSuccess(Login login) {
-        mRepository.saveLoginState(login);
-        mLoginView.showActiveUser(true);
+        repository.saveLoginState(login);
+        loginView.showActiveUser(true);
       }
 
       @Override public void onLoginFailure() {
-        mLoginView.showActiveUser(false);
-        mLoginView.setRetryIndicator(true);
+        loginView.showActiveUser(false);
+        loginView.setRetryIndicator(true);
       }
     });
   }
 
   @Override public void stop() {
-    mRepository.clearSubscriptions();
+    repository.clearSubscriptions();
   }
 
   @Override public void login(@NonNull WalletDataSource.LoginCallback callback) {
-    mLoginView.setRetryIndicator(false);
-    mRepository.login(callback);
+    loginView.setRetryIndicator(false);
+    repository.login(callback);
   }
 }
 

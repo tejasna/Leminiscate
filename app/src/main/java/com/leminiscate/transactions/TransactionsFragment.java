@@ -33,9 +33,9 @@ import static com.leminiscate.utils.PreConditions.checkNotNull;
 
 public class TransactionsFragment extends Fragment implements TransactionsContract.View {
 
-  private TransactionsContract.Presenter mPresenter;
+  private TransactionsContract.Presenter presenter;
 
-  private TransactionsAdapter mRecyclerAdapter;
+  private TransactionsAdapter recyclerAdapter;
 
   private Unbinder unbinder;
 
@@ -52,7 +52,7 @@ public class TransactionsFragment extends Fragment implements TransactionsContra
 
   @Override public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    mRecyclerAdapter = new TransactionsAdapter(new ArrayList<>(0));
+    recyclerAdapter = new TransactionsAdapter(new ArrayList<>(0));
   }
 
   @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -62,30 +62,30 @@ public class TransactionsFragment extends Fragment implements TransactionsContra
 
     unbinder = ButterKnife.bind(this, rootView);
 
-    swipeRefreshLayout.setOnRefreshListener(() -> mPresenter.loadTransactions(true));
+    swipeRefreshLayout.setOnRefreshListener(() -> presenter.loadTransactions(true));
 
     LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
     layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
     recyclerView.addItemDecoration(new TransactionDividerItemDecoration(getContext()));
     recyclerView.setLayoutManager(layoutManager);
-    recyclerView.setAdapter(mRecyclerAdapter);
+    recyclerView.setAdapter(recyclerAdapter);
 
     return rootView;
   }
 
   @Override public void onStart() {
     super.onStart();
-    mPresenter.start();
+    presenter.start();
   }
 
   @Override public void onDestroy() {
     super.onDestroy();
     unbinder.unbind();
-    mPresenter.stop();
+    presenter.stop();
   }
 
   @Override public void setPresenter(TransactionsContract.Presenter presenter) {
-    mPresenter = checkNotNull(presenter);
+    this.presenter = checkNotNull(presenter);
   }
 
   @Override public boolean isActive() {
@@ -98,7 +98,7 @@ public class TransactionsFragment extends Fragment implements TransactionsContra
 
   @Override public void showTransactions(List<Transaction> transactions) {
     swipeRefreshLayout.setRefreshing(false);
-    mRecyclerAdapter.replaceData(transactions);
+    recyclerAdapter.replaceData(transactions);
   }
 
   @Override public void showNoTransactions() {

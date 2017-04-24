@@ -33,7 +33,7 @@ import static com.leminiscate.utils.PreConditions.checkNotNull;
   }
 
   @Override public void login(@NonNull LoginCallback callback) {
-
+    // Not required because the {@link TransactionsRepository} handles the logic of login locally
   }
 
   @Override public void saveLoginState(@NonNull Login login) {
@@ -178,17 +178,6 @@ import static com.leminiscate.utils.PreConditions.checkNotNull;
       realm.close();
     });
   }
-
-  /**
-   * Note: {@link LoadTransactionsCallback# onDataNotAvailable()} is fired if the database doesn't
-   * exist
-   * or the table is empty.
-   */
-
-  /**
-   * Note: {@link "GetTransactionsCallback# onDataNotAvailable()} is fired if the {@link } isn't
-   * found.
-   */
 
   @Override public void clearSubscriptions() {
     // Not required for the local data source because the {@link WalletRepository} handles
