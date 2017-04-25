@@ -17,4 +17,5 @@ The wallet supports 5 currencies which uses a static class file with currency co
         static final double GBP = 1;
       }
   
-  
+  A lot of inspiration comes from : A special thanks to google.
+  https://github.com/googlesamples/android-architecture
