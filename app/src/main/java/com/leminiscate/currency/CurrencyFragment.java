@@ -21,8 +21,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import com.leminiscate.R;
 import com.leminiscate.data.Currency;
-import com.leminiscate.utils.CurrencyClickListener;
-import com.leminiscate.utils.CurrencyMapper;
+import com.leminiscate.utils.CurrencyUtil;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -120,7 +119,7 @@ public class CurrencyFragment extends Fragment
       if (holder.getItemViewType() == ITEM) {
         CurrencyAdapter.VHItem currency = (CurrencyAdapter.VHItem) holder;
         currency.name.setText(currencies.get(position).getName());
-        int id = CurrencyMapper.map(currencies.get(position).getName());
+        int id = CurrencyUtil.map(currencies.get(position).getName());
         currency.currencyImage.setBackgroundDrawable(
             ContextCompat.getDrawable(currency.itemView.getContext(), id));
       }

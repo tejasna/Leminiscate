@@ -1,8 +1,8 @@
-package com.leminiscate.utils;
+package com.leminiscate.currency;
 
 import com.leminiscate.data.Currency;
 
-public interface CurrencyClickListener {
+interface CurrencyClickListener {
 
   void onClick(Currency currency);
 }

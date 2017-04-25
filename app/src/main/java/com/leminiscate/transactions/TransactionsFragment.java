@@ -24,7 +24,7 @@ import com.leminiscate.R;
 import com.leminiscate.balance.BalanceActivity;
 import com.leminiscate.data.Transaction;
 import com.leminiscate.transactionsdetail.TransactionsDetailActivity;
-import com.leminiscate.utils.CurrencyMapper;
+import com.leminiscate.utils.CurrencyUtil;
 import com.leminiscate.utils.UTCUtil;
 import java.util.ArrayList;
 import java.util.List;
@@ -103,14 +103,14 @@ public class TransactionsFragment extends Fragment implements TransactionsContra
 
   @Override public void showNoTransactions() {
     swipeRefreshLayout.setRefreshing(false);
-    Snackbar.make(swipeRefreshLayout, getString(R.string.transactions_empty),
-        Snackbar.LENGTH_SHORT).show();
+    Snackbar.make(swipeRefreshLayout, getString(R.string.transactions_empty), Snackbar.LENGTH_SHORT)
+        .show();
   }
 
   @Override public void showLoadingTransactionsError() {
     swipeRefreshLayout.setRefreshing(false);
-    Snackbar.make(swipeRefreshLayout, getString(R.string.transactions_error),
-        Snackbar.LENGTH_SHORT).show();
+    Snackbar.make(swipeRefreshLayout, getString(R.string.transactions_error), Snackbar.LENGTH_SHORT)
+        .show();
   }
 
   private static class TransactionsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -153,7 +153,7 @@ public class TransactionsFragment extends Fragment implements TransactionsContra
         int finalPosition = position - 1;
         transaction.title.setText(transactions.get(finalPosition).getDescription());
         transaction.amount.setText(transactions.get(finalPosition).getAmountInNativeRate());
-        int id = CurrencyMapper.map(transactions.get(finalPosition).getCurrency());
+        int id = CurrencyUtil.map(transactions.get(finalPosition).getCurrency());
         transaction.currency.setBackgroundDrawable(
             ContextCompat.getDrawable(transaction.itemView.getContext(), id));
         transaction.date.setText(android.text.format.DateUtils.getRelativeTimeSpanString(

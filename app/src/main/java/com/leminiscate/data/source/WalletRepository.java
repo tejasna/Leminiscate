@@ -27,7 +27,7 @@ import static com.leminiscate.utils.PreConditions.checkNotNull;
 
   private Balance cachedBalance;
 
-  private Currency cachedPreferredCurrency;
+  private Currency cachedUserPrefCurrency;
 
   private boolean cacheIsDirty = false;
 
@@ -107,7 +107,7 @@ import static com.leminiscate.utils.PreConditions.checkNotNull;
 
   @Override public void getBalance(@NonNull LoadBalanceCallback callback) {
     if (cachedBalance != null && !cacheIsDirty) {
-      callback.onBalanceLoaded(cachedBalance);
+      callback.onBalanceLoaded(cachedBalance, cachedUserPrefCurrency);
       return;
     }
 
@@ -115,10 +115,11 @@ import static com.leminiscate.utils.PreConditions.checkNotNull;
       getBalanceFromRemoteDataSource(callback);
     } else {
       localDataSource.getBalance(new LoadBalanceCallback() {
-        @Override public void onBalanceLoaded(Balance balance) {
+
+        @Override public void onBalanceLoaded(Balance balance, Currency userPrefCurrency) {
           checkNotNull(balance);
           refreshBalanceCache(balance);
-          callback.onBalanceLoaded(balance);
+          callback.onBalanceLoaded(balance, userPrefCurrency);
         }
 
         @Override public void onDataNotAvailable() {
@@ -178,14 +179,15 @@ import static com.leminiscate.utils.PreConditions.checkNotNull;
   }
 
   @Override public void getPreferredCurrency(@NonNull LoadCurrenciesCallback callback) {
-    if (!cacheIsDirty && cachedPreferredCurrency != null) {
+    if (!cacheIsDirty && cachedUserPrefCurrency != null) {
       ArrayList<Currency> currencies = new ArrayList<>(1);
-      currencies.add(cachedPreferredCurrency);
+      currencies.add(cachedUserPrefCurrency);
       callback.onCurrencyLoaded(currencies);
     } else {
       localDataSource.getPreferredCurrency(new LoadCurrenciesCallback() {
         @Override public void onCurrencyLoaded(List<Currency> currencies) {
           checkNotNull(currencies);
+          refreshCurrencyCache(currencies);
           callback.onCurrencyLoaded(currencies);
         }
 
@@ -198,21 +200,18 @@ import static com.leminiscate.utils.PreConditions.checkNotNull;
 
   @Override public void savePreferredCurrency(@NonNull Currency currency) {
     checkNotNull(currency);
+    refreshUserPrefCurrency(currency);
     remoteDataSource.savePreferredCurrency(currency);
     localDataSource.savePreferredCurrency(currency);
-
-    if (cachedPreferredCurrency == null) {
-      cachedPreferredCurrency = new Currency();
-    }
-    cachedPreferredCurrency = currency;
   }
 
   @Override
   public void isBalanceGreaterThan(@NonNull BalanceAvailabilityCallback callback, double amount) {
     remoteDataSource.getBalance(new LoadBalanceCallback() {
-      @Override public void onBalanceLoaded(Balance balance) {
+
+      @Override public void onBalanceLoaded(Balance balance, Currency userPrefCurrency) {
         refreshBalanceCache(balance);
-        refreshLocalDataSource(balance);
+        refreshUserPrefCurrency(userPrefCurrency);
         double d = Double.parseDouble(balance.getBalance());
         int balanceInInt = (int) d;
         if (balanceInInt >= amount) {
@@ -230,19 +229,24 @@ import static com.leminiscate.utils.PreConditions.checkNotNull;
 
   private void getBalanceFromRemoteDataSource(@NonNull LoadBalanceCallback callback) {
     remoteDataSource.getBalance(new LoadBalanceCallback() {
-      @Override public void onBalanceLoaded(Balance balance) {
-        refreshBalanceCache(balance);
+
+      @Override public void onBalanceLoaded(Balance balance, Currency userPrefCurrency) {
         refreshLocalDataSource(balance);
-        callback.onBalanceLoaded(cachedBalance);
+        refreshBalanceCache(balance);
+        refreshUserPrefCurrency(userPrefCurrency);
+
+        callback.onBalanceLoaded(cachedBalance, userPrefCurrency);
       }
 
       @Override public void onDataNotAvailable() {
         callback.onDataNotAvailable();
         localDataSource.getBalance(new LoadBalanceCallback() {
-          @Override public void onBalanceLoaded(Balance balance) {
+
+          @Override public void onBalanceLoaded(Balance balance, Currency userPrefCurrency) {
             checkNotNull(balance);
             refreshBalanceCache(balance);
-            callback.onBalanceLoaded(balance);
+            refreshUserPrefCurrency(userPrefCurrency);
+            callback.onBalanceLoaded(balance, userPrefCurrency);
           }
 
           @Override public void onDataNotAvailable() {
@@ -361,6 +365,15 @@ import static com.leminiscate.utils.PreConditions.checkNotNull;
     cacheIsDirty = false;
   }
 
+  private void refreshUserPrefCurrency(Currency currency) {
+    if (cachedUserPrefCurrency == null) {
+      cachedUserPrefCurrency = new Currency();
+    }
+    cachedUserPrefCurrency.setResource(currency.getResource());
+    cachedUserPrefCurrency.setName(currency.getName());
+    cachedUserPrefCurrency.setUserPref(currency.getUserPref());
+  }
+
   private void refreshBalanceCache(Balance balance) {
     if (cachedBalance == null) {
       cachedBalance = new Balance();
@@ -370,7 +383,6 @@ import static com.leminiscate.utils.PreConditions.checkNotNull;
   }
 
   private void refreshLocalDataSource(Balance balance) {
-    localDataSource.deleteExistingBalance();
     localDataSource.saveBalance(balance);
   }
 }

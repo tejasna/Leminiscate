@@ -16,14 +16,14 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class NetModule {
 
-  private Retrofit retrofit;
+  private static Retrofit retrofit;
   private static final String BASE_URL = "https://interviewer-api.herokuapp.com";
 
   public NetModule() {
     retrofit = retrofitBuilder(gsonBuilder());
   }
 
-  public Retrofit getRetrofit() {
+  public static Retrofit getRetrofit() {
     return retrofit;
   }
 
@@ -42,9 +42,9 @@ public class NetModule {
     bodyInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
     OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-    httpClient.connectTimeout(30, TimeUnit.SECONDS);
-    httpClient.readTimeout(30, TimeUnit.SECONDS);
-    httpClient.writeTimeout(30, TimeUnit.SECONDS);
+    httpClient.connectTimeout(15, TimeUnit.SECONDS);
+    httpClient.readTimeout(15, TimeUnit.SECONDS);
+    httpClient.writeTimeout(15, TimeUnit.SECONDS);
     addPreRequisiteHeaders(httpClient);
     httpClient.addInterceptor(new ApiErrorImpl());
     httpClient.addInterceptor(bodyInterceptor);

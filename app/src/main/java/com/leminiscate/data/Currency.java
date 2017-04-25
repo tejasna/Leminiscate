@@ -8,7 +8,7 @@ import io.realm.annotations.RealmClass;
 
   @PrimaryKey private String name;
   private String resource;
-  private Boolean preferred;
+  private Boolean userPref;
 
   public String getName() {
     return name;
@@ -26,11 +26,11 @@ import io.realm.annotations.RealmClass;
     this.resource = resource;
   }
 
-  public Boolean getPreferred() {
-    return preferred;
+  public Boolean getUserPref() {
+    return userPref;
   }
 
-  public void setPreferred(Boolean preferred) {
-    this.preferred = preferred;
+  public void setUserPref(Boolean userPref) {
+    this.userPref = userPref;
   }
 }

@@ -100,10 +100,12 @@ import static com.leminiscate.utils.PreConditions.checkNotNull;
   @Override public void getBalance(@NonNull LoadBalanceCallback callback) {
     Realm.getDefaultInstance().executeTransaction(realm -> {
       Balance balance = realm.where(Balance.class).findFirst();
+      Currency userPrefCurrency = realm.where(Currency.class).equalTo("userPref", true).findFirst();
       if (balance == null) {
         callback.onDataNotAvailable();
       } else {
-        callback.onBalanceLoaded(realm.copyFromRealm(balance));
+        callback.onBalanceLoaded(realm.copyFromRealm(balance),
+            realm.copyFromRealm(userPrefCurrency));
       }
       realm.close();
     });
@@ -111,6 +113,7 @@ import static com.leminiscate.utils.PreConditions.checkNotNull;
 
   @Override public void saveBalance(@NonNull Balance balance) {
     checkNotNull(balance);
+    if(!Realm.getDefaultInstance().isInTransaction())
     Realm.getDefaultInstance().executeTransaction(realm -> {
       realm.copyToRealmOrUpdate(balance);
       realm.close();
@@ -132,7 +135,7 @@ import static com.leminiscate.utils.PreConditions.checkNotNull;
   @Override public void getPreferredCurrency(@NonNull LoadCurrenciesCallback callback) {
     Realm.getDefaultInstance().executeTransaction(realm -> {
       RealmResults<Currency> currencies =
-          realm.where(Currency.class).equalTo("preferred", true).findAll();
+          realm.where(Currency.class).equalTo("userPref", true).findAll();
       if (currencies == null) {
         callback.onDataNotAvailable();
       } else {
@@ -145,10 +148,10 @@ import static com.leminiscate.utils.PreConditions.checkNotNull;
   @Override public void savePreferredCurrency(@NonNull Currency newPreferredCurrency) {
     Realm.getDefaultInstance().executeTransaction(realm -> {
       Currency preferredCurrency =
-          realm.where(Currency.class).equalTo("preferred", true).findFirst();
+          realm.where(Currency.class).equalTo("userPref", true).findFirst();
       if (preferredCurrency != null) {
-        preferredCurrency.setPreferred(false);
-        newPreferredCurrency.setPreferred(true);
+        preferredCurrency.setUserPref(false);
+        newPreferredCurrency.setUserPref(true);
         realm.copyToRealmOrUpdate(preferredCurrency);
         realm.copyToRealmOrUpdate(newPreferredCurrency);
       }

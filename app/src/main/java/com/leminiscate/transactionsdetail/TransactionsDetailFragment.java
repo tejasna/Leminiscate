@@ -21,7 +21,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import com.leminiscate.R;
 import com.leminiscate.data.Transaction;
-import com.leminiscate.utils.CurrencyMapper;
+import com.leminiscate.utils.CurrencyUtil;
 import com.leminiscate.utils.UTCUtil;
 import java.util.ArrayList;
 import java.util.List;
@@ -146,7 +146,7 @@ public class TransactionsDetailFragment extends Fragment
             (TransactionsDetailFragment.TransactionsAdapter.VHTransaction) holder;
         transaction.title.setText(transactions.get(position).getDescription());
         transaction.amount.setText(transactions.get(position).getAmountInNativeRate());
-        int id = CurrencyMapper.map(transactions.get(position).getCurrency());
+        int id = CurrencyUtil.map(transactions.get(position).getCurrency());
         transaction.currency.setImageDrawable(
             ContextCompat.getDrawable(transaction.itemView.getContext(), id));
         transaction.date.setText(android.text.format.DateUtils.getRelativeTimeSpanString(
