@@ -1,2 +1,2 @@
 # Leminiscate
-A payment app. Built as a prototype. 
+A Wallet app built as a prototype which explores design patterns and frameworks in Android. Uses DI with Dagger 2 which simplifies code for a clearer path to write testable code. It uses RxJava for Functionally styed reactive programming. It pushes values and functions down the system while you can react to it by transforming  and combining them all in a reactive way. MVP pattern to sperate business logic which can be tested using JVM.
