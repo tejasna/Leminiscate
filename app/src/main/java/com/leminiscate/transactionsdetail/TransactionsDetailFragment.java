@@ -21,7 +21,6 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import com.leminiscate.R;
 import com.leminiscate.data.Transaction;
-import com.leminiscate.utils.CurrencyMapper;
 import com.leminiscate.utils.UTCUtil;
 import java.util.ArrayList;
 import java.util.List;

@@ -6,8 +6,7 @@ import com.leminiscate.data.Currency;
 import com.leminiscate.data.source.WalletDataSource;
 import com.leminiscate.data.source.WalletRepository;
 import com.leminiscate.spend.SpendActivity;
-import com.leminiscate.utils.CurrencyConverterUtil;
-import java.util.List;
+import com.leminiscate.utils.CurrencyUtil;
 import javax.inject.Inject;
 
 class BalancePresenter implements BalanceContract.Presenter {
@@ -56,7 +55,7 @@ class BalancePresenter implements BalanceContract.Presenter {
 
     repository.getBalance(new WalletDataSource.LoadBalanceCallback() {
 
-      @Override public void onBalanceLoaded(Balance balance) {
+      @Override public void onBalanceLoaded(Balance balance, Currency userPrefCurrency) {
         if (!balanceView.isActive()) {
           return;
         }
@@ -64,7 +63,7 @@ class BalancePresenter implements BalanceContract.Presenter {
           balanceView.setLoadingIndicator(false);
         }
 
-        processBalance(balance);
+        processBalance(balance, userPrefCurrency);
       }
 
       @Override public void onDataNotAvailable() {
@@ -76,25 +75,18 @@ class BalancePresenter implements BalanceContract.Presenter {
     });
   }
 
-  private void processBalance(Balance balance) {
+  private void processBalance(Balance balance, Currency userPrefCurrency) {
     if (balance == null) {
       balanceView.showBalanceUnavailable();
     } else {
 
-      repository.getPreferredCurrency(new WalletDataSource.LoadCurrenciesCallback() {
-        @Override public void onCurrencyLoaded(List<Currency> currencies) {
-          if (currencies != null && currencies.size() > 0) {
-            Balance preferredBalance =
-                CurrencyConverterUtil.convertAmountToPreferredCurrency(currencies.get(0),
-                    balance.getBalance());
-            balanceView.showBalance(preferredBalance);
-          }
-        }
-
-        @Override public void onDataNotAvailable() {
-          balanceView.showBalanceUnavailable();
-        }
-      });
+      if (userPrefCurrency != null) {
+        Balance processedBalance =
+            CurrencyUtil.convertAmountToCurrency(userPrefCurrency, balance.getBalance());
+        balanceView.showBalance(processedBalance);
+      } else {
+        balanceView.showBalance(balance);
+      }
     }
   }
 }

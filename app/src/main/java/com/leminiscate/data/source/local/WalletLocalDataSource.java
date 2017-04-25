@@ -105,8 +105,7 @@ import static com.leminiscate.utils.PreConditions.checkNotNull;
       } else {
         callback.onBalanceLoaded(realm.copyFromRealm(balance));
       }
-      realm.close();
-    });
+     });
   }
 
   @Override public void saveBalance(@NonNull Balance balance) {
@@ -130,16 +129,18 @@ import static com.leminiscate.utils.PreConditions.checkNotNull;
   }
 
   @Override public void getPreferredCurrency(@NonNull LoadCurrenciesCallback callback) {
-    Realm.getDefaultInstance().executeTransaction(realm -> {
-      RealmResults<Currency> currencies =
-          realm.where(Currency.class).equalTo("preferred", true).findAll();
-      if (currencies == null) {
-        callback.onDataNotAvailable();
-      } else {
-        callback.onCurrencyLoaded(realm.copyFromRealm(currencies));
-      }
-      realm.close();
-    });
+    if (!Realm.getDefaultInstance().isInTransaction()) {
+      Realm.getDefaultInstance().executeTransaction(realm -> {
+        RealmResults<Currency> currencies =
+            realm.where(Currency.class).equalTo("preferred", true).findAll();
+        if (currencies == null) {
+          callback.onDataNotAvailable();
+        } else {
+          callback.onCurrencyLoaded(realm.copyFromRealm(currencies));
+        }
+        realm.close();
+      });
+    }
   }
 
   @Override public void savePreferredCurrency(@NonNull Currency newPreferredCurrency) {

@@ -18,7 +18,6 @@ import butterknife.Unbinder;
 import com.leminiscate.R;
 import com.leminiscate.currency.CurrencyActivity;
 import com.leminiscate.data.Balance;
-import com.leminiscate.utils.CurrencyMapper;
 
 import static com.leminiscate.utils.PreConditions.checkNotNull;
 

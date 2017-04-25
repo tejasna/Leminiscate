@@ -5,7 +5,7 @@ import com.leminiscate.data.Transaction;
 import com.leminiscate.data.source.WalletDataSource;
 import com.leminiscate.data.source.WalletRepository;
 import com.leminiscate.spend.SpendActivity;
-import com.leminiscate.utils.CurrencyConverterUtil;
+import com.leminiscate.utils.CurrencyUtil;
 import java.util.Collections;
 import java.util.List;
 import javax.inject.Inject;
@@ -84,7 +84,7 @@ public class TransactionsDetailPresenter implements TransactionsDetailContract.P
       Collections.reverse(transactions);
       for (Transaction transaction : transactions) {
         transaction.setAmountInNativeRate(String.valueOf(
-            CurrencyConverterUtil.round(CurrencyConverterUtil.getAmountFromGBPTO(transaction), 2)));
+            CurrencyUtil.round(CurrencyUtil.convertFromGBP(transaction), 2)));
       }
       transactionsView.showTransactions(transactions);
     }

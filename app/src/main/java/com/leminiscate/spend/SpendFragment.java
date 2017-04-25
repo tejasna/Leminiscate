@@ -22,7 +22,6 @@ import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.leminiscate.R;
 import com.leminiscate.currency.CurrencyActivity;
 import com.leminiscate.data.Currency;
-import com.leminiscate.utils.CurrencyMapper;
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.DisposableSubscriber;

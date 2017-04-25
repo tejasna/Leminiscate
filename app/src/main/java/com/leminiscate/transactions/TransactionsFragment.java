@@ -24,7 +24,6 @@ import com.leminiscate.R;
 import com.leminiscate.balance.BalanceActivity;
 import com.leminiscate.data.Transaction;
 import com.leminiscate.transactionsdetail.TransactionsDetailActivity;
-import com.leminiscate.utils.CurrencyMapper;
 import com.leminiscate.utils.UTCUtil;
 import java.util.ArrayList;
 import java.util.List;

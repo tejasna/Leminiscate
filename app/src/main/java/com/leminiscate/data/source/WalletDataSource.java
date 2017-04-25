@@ -27,7 +27,7 @@ public interface WalletDataSource {
 
   interface LoadBalanceCallback {
 
-    void onBalanceLoaded(Balance balance);
+    void onBalanceLoaded(Balance balance, Currency userPrefCurrency);
 
     void onDataNotAvailable();
   }

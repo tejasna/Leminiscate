@@ -6,7 +6,7 @@ import com.leminiscate.data.Currency;
 import com.leminiscate.data.Transaction;
 import com.leminiscate.data.source.WalletDataSource;
 import com.leminiscate.data.source.WalletRepository;
-import com.leminiscate.utils.CurrencyConverterUtil;
+import com.leminiscate.utils.CurrencyUtil;
 import java.util.List;
 import javax.inject.Inject;
 import org.joda.time.DateTime;
@@ -89,7 +89,7 @@ class SpendPresenter implements SpendContract.Presenter {
   private void isBalanceGreaterThanAmountToSpend(String description, String amountToSpend,
       String currency) {
 
-    double balanceInInt = CurrencyConverterUtil.convertAmountToGBP(
+    double balanceInInt = CurrencyUtil.convertAmountToGBP(
         makeTransactionObject(description, amountToSpend, currency));
 
     repository.isBalanceGreaterThan(new WalletDataSource.BalanceAvailabilityCallback() {

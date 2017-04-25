@@ -21,8 +21,6 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import com.leminiscate.R;
 import com.leminiscate.data.Currency;
-import com.leminiscate.utils.CurrencyClickListener;
-import com.leminiscate.utils.CurrencyMapper;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -19,7 +19,6 @@ import com.leminiscate.spend.SpendActivity;
 import com.leminiscate.utils.ActivityUtils;
 import com.leminiscate.utils.ApiError;
 import com.leminiscate.utils.BusProvider;
-import com.leminiscate.utils.CurrencyMapper;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 import javax.inject.Inject;

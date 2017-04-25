@@ -8,7 +8,7 @@ import com.leminiscate.data.Login;
 import com.leminiscate.data.Transaction;
 import com.leminiscate.data.source.NetModule;
 import com.leminiscate.data.source.WalletDataSource;
-import com.leminiscate.utils.CurrencyConverterUtil;
+import com.leminiscate.utils.CurrencyUtil;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
@@ -83,7 +83,7 @@ import static io.reactivex.Observable.empty;
   @Override
   public void newTransaction(@NonNull Transaction transaction, SaveTransactionCallback callback) {
 
-    double amountInGBP = CurrencyConverterUtil.convertAmountToGBP(transaction);
+    double amountInGBP = CurrencyUtil.convertAmountToGBP(transaction);
     transaction.setAmount(String.valueOf(amountInGBP));
 
     compositeSubscription.add(restApi.spend(getAuthorizer(), transaction)
@@ -106,6 +106,7 @@ import static io.reactivex.Observable.empty;
         .doOnError(throwable -> Timber.e(throwable.getMessage()))
         .onErrorResumeNext(throwable -> {
           callback.onDataNotAvailable();
+
           return empty();
         })
         .subscribe(callback::onBalanceLoaded));
