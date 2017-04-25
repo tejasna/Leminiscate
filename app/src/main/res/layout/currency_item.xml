@@ -2,6 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:paddingTop="8dip"
+    android:paddingBottom="8dip"
     android:background="@color/colorGrey"
     android:padding="@dimen/fragment_horizontal_margin">
 
@@ -19,6 +21,7 @@
       android:id="@+id/img_currency"
       android:layout_width="24dip"
       android:layout_height="24dip"
-      android:layout_gravity="center_vertical"/>
+      android:layout_gravity="center_vertical"
+      android:layout_marginEnd="4dip"/>
 
 </LinearLayout>

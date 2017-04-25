@@ -22,6 +22,7 @@ import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.leminiscate.R;
 import com.leminiscate.currency.CurrencyActivity;
 import com.leminiscate.data.Currency;
+import com.leminiscate.utils.CurrencyUtil;
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.DisposableSubscriber;
@@ -197,15 +198,15 @@ public class SpendFragment extends Fragment implements SpendContract.View {
 
         preferredCurrencyTextView.setText(preferredCurrency.getName());
 
-        preferredCurrencyImageView.setBackgroundDrawable(ContextCompat.getDrawable(getContext(),
-            CurrencyMapper.map(preferredCurrency.getName())));
+        preferredCurrencyImageView.setBackgroundDrawable(
+            ContextCompat.getDrawable(getContext(), CurrencyUtil.map(preferredCurrency.getName())));
 
-        show(spendDialogView);
+        showDialog(spendDialogView);
       }
     }
   }
 
-  private void show(View view) {
+  private void showDialog(View view) {
     descriptionChangeObservable =
         RxTextView.textChanges(descriptionView).skip(1).toFlowable(BackpressureStrategy.LATEST);
     amountChangeObservable =
@@ -225,7 +226,7 @@ public class SpendFragment extends Fragment implements SpendContract.View {
     if (preferredCurrency != null && preferredCurrencyImageView != null) {
       preferredCurrencyTextView.setText(preferredCurrency.getName());
       preferredCurrencyImageView.setBackgroundDrawable(
-          ContextCompat.getDrawable(getContext(), CurrencyMapper.map(preferredCurrency.getName())));
+          ContextCompat.getDrawable(getContext(), CurrencyUtil.map(preferredCurrency.getName())));
     }
   }
 

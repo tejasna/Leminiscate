@@ -18,6 +18,7 @@ import butterknife.Unbinder;
 import com.leminiscate.R;
 import com.leminiscate.currency.CurrencyActivity;
 import com.leminiscate.data.Balance;
+import com.leminiscate.utils.CurrencyUtil;
 
 import static com.leminiscate.utils.PreConditions.checkNotNull;
 
@@ -81,7 +82,7 @@ public class BalanceFragment extends Fragment implements BalanceContract.View {
     currencyView.setText(balance.getCurrency());
     balanceView.setText(balance.getBalance());
     imgCurrencyView.setImageDrawable(
-        ContextCompat.getDrawable(getContext(), CurrencyMapper.map(balance.getCurrency())));
+        ContextCompat.getDrawable(getContext(), CurrencyUtil.map(balance.getCurrency())));
   }
 
   @Override public void showBalanceUnavailable() {

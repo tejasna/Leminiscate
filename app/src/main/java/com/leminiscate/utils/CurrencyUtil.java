@@ -152,13 +152,13 @@ public class CurrencyUtil {
   /**
    * Sets the default currency to be used throughout the app to GBP
    */
-  public static void setDefaultCurrency() {
+  public static void setDefaultCurrencyIfNull() {
 
     Realm.getDefaultInstance().executeTransaction(realm -> {
 
-      if (realm.where(Currency.class).equalTo("preferred", true).findFirst() == null) {
+      if (realm.where(Currency.class).equalTo("userPref", true).findFirst() == null) {
         Currency defaultCurrency = realm.createObject(Currency.class, "GBP");
-        defaultCurrency.setPreferred(true);
+        defaultCurrency.setUserPref(true);
         defaultCurrency.setResource("R.drawable.gbp");
         realm.copyToRealmOrUpdate(defaultCurrency);
         realm.close();

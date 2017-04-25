@@ -19,6 +19,7 @@ import com.leminiscate.spend.SpendActivity;
 import com.leminiscate.utils.ActivityUtils;
 import com.leminiscate.utils.ApiError;
 import com.leminiscate.utils.BusProvider;
+import com.leminiscate.utils.CurrencyUtil;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 import javax.inject.Inject;
@@ -59,7 +60,7 @@ public class TransactionsActivity extends AppCompatActivity {
         .build()
         .inject(this);
 
-    CurrencyMapper.setDefaultCurrency();
+    CurrencyUtil.setDefaultCurrencyIfNull();
   }
 
   @OnClick(R.id.fab_add_transaction) void addNewTransaction() {
@@ -134,6 +135,7 @@ public class TransactionsActivity extends AppCompatActivity {
 
   @Override protected void onDestroy() {
     super.onDestroy();
+    presenter.stop();
     unbinder.unbind();
   }
 }

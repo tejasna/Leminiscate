@@ -62,18 +62,12 @@ import static io.reactivex.Observable.empty;
     compositeSubscription.add(restApi.getTransactions(getAuthorizer())
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
-        .doOnError(throwable -> {
-          Timber.e(throwable.getMessage());
-        })
+        .doOnError(throwable -> Timber.e(throwable.getMessage()))
         .onErrorResumeNext(throwable -> {
           callback.onDataNotAvailable();
           return empty();
         })
         .subscribe(callback::onTransactionsLoaded));
-  }
-
-  private void handle401() {
-
   }
 
   @Override public void saveTransactions(@NonNull List<Transaction> transactions) {
@@ -83,7 +77,10 @@ import static io.reactivex.Observable.empty;
   @Override
   public void newTransaction(@NonNull Transaction transaction, SaveTransactionCallback callback) {
 
+    // Converts the balance in a transaction from native rate to GBP since the server accepts
+    // transactions only in GBP but the client supports (currently 5) currencies
     double amountInGBP = CurrencyUtil.convertAmountToGBP(transaction);
+
     transaction.setAmount(String.valueOf(amountInGBP));
 
     compositeSubscription.add(restApi.spend(getAuthorizer(), transaction)
@@ -106,10 +103,16 @@ import static io.reactivex.Observable.empty;
         .doOnError(throwable -> Timber.e(throwable.getMessage()))
         .onErrorResumeNext(throwable -> {
           callback.onDataNotAvailable();
-
           return empty();
         })
-        .subscribe(callback::onBalanceLoaded));
+        .subscribe(balance -> {
+          Realm.getDefaultInstance().executeTransaction(realm -> {
+            Currency userPrefCurrency = realm.copyFromRealm(
+                realm.where(Currency.class).equalTo("userPref", true).findFirst());
+            realm.close();
+            callback.onBalanceLoaded(balance, userPrefCurrency);
+          });
+        }));
   }
 
   @Override public void saveBalance(@NonNull Balance balance) {

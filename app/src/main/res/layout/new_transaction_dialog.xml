@@ -31,6 +31,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
         android:hint="@string/spend_description"
+        android:inputType="textCapSentences"
         android:textColor="@color/colorPrimaryDark"
         android:textColorHint="@color/colorPrimaryDark"
     />
@@ -60,9 +61,11 @@
       android:id="@+id/view_group_currency"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginTop="@dimen/activity_vertical_margin"
+      android:layout_marginTop="@dimen/fragment_vertical_margin"
+      android:background="@drawable/shape_currency_choice"
+      android:foreground="?android:attr/selectableItemBackground"
       android:orientation="horizontal"
-      android:padding="4dip">
+      android:padding="20dip">
 
 
     <com.leminiscate.widget.SolomonTextViewBold
@@ -77,10 +80,10 @@
 
     <android.support.v7.widget.AppCompatImageView
         android:id="@+id/img_currency"
-        android:layout_width="24dip"
-        android:layout_height="24dip"
+        android:layout_width="20dip"
+        android:layout_height="20dip"
+        android:background="@drawable/ic_next"
         android:padding="8dip"
-        android:src="@drawable/ic_next"
     />
   </LinearLayout>
 
@@ -89,7 +92,7 @@
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:layout_marginBottom="40dip"
-      android:layout_marginTop="24dip"
+      android:layout_marginTop="40dip"
       android:orientation="horizontal"
       android:paddingEnd="4dip"
       android:paddingStart="4dip">
@@ -101,7 +104,8 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:background="@android:color/transparent"
-        android:gravity="bottom|center_vertical"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:gravity="center_vertical"
         android:text="@android:string/cancel"
         android:textColor="@color/colorPrimaryDark"/>
 
@@ -119,7 +123,7 @@
         android:id="@+id/btn_add"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="end"
+        android:layout_gravity="end|bottom"
         android:background="@color/colorPrimaryDark"
         android:foreground="?android:attr/selectableItemBackground"
         android:text="@string/spend_add"

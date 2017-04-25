@@ -78,6 +78,7 @@ public class ApiErrorImpl implements Interceptor {
         error(402, "NETWORK-AUTHENTICATION-REQUIRED");
         break;
       default:
+        error(0, "UNKNOWN");
         break;
     }
     return response;
